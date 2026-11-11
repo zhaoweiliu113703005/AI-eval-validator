@@ -5,7 +5,7 @@
   // ---------- text ----------
   const I18N = {
     zh: {
-      brand: "AI 臨場教練",
+      brand: "AI 臨場教練", home: "首頁",
       introTitle: "AI 模擬面試與課堂報告教練",
       introBody: "上場之前，先在這裡練一次。AI 扮演面試官或台下聽眾，依你的履歷或簡報提問；同時在瀏覽器裡分析你的表情、眼神、心率與聲音，結束後給你一份逐題回饋報告。中文、英文都能練。",
       introStart: "開始練習", introSample: "看範例報告",
@@ -86,7 +86,7 @@
       demo: "示意版本：目前尚未串接 AI 模型，畫面中的分析結果皆為範例資料。"
     },
     en: {
-      brand: "AI Practice Coach",
+      brand: "AI Practice Coach", home: "Home",
       introTitle: "AI coach for mock interviews and class presentations",
       introBody: "Practice here before the real thing. The AI plays your interviewer or your audience and asks questions based on your resume or slides. Meanwhile, your browser analyzes your expressions, eye contact, heart rate, and voice. At the end you get question-by-question feedback. Practice in Chinese or English.",
       introStart: "Start practicing", introSample: "See a sample report",
@@ -644,9 +644,10 @@
     </div>`;
   }
 
-  // ---------- top bar: only the home link (logo) and the language switch ----------
+  // ---------- top bar: logo, an explicit Home button (hidden on the home page), language switch ----------
   function renderTopbar() {
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t[el.dataset.i18n]; });
+    $("homeBtn").hidden = route() === "intro";
     document.querySelectorAll("[data-lang]").forEach((b) => {
       b.classList.toggle("on", b.dataset.lang === state.lang);
       b.setAttribute("aria-pressed", b.dataset.lang === state.lang);
