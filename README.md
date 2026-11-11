@@ -35,14 +35,6 @@ vercel
 ```
 照提示登入、按 Enter 用預設值即可；正式網址用 `vercel --prod`。
 
-## 本機預覽 / Local preview
-
-鏡頭需要 HTTPS 或 localhost，直接雙擊 index.html 可能打不開鏡頭。可以用：
-```
-python -m http.server 8000
-```
-再打開 http://localhost:8000
-
 ## 之後要串模型時 / Next steps
 
 - 面試題目、追問、評分：把 `app.js` 裡的範例資料換成呼叫後端 API 的結果
