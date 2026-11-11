@@ -334,6 +334,10 @@
       `<button type="button" class="btn small" data-action="showAlert">${esc(t.showAlert)}</button>`;
     return `
     <div class="wrap" style="padding-top:24px">
+      <div class="page-head">
+        <div class="pills">${t.steps.map((s, i) => `<span class="pill ${i < 2 ? "done" : i === 2 ? "now" : ""}">${i + 1} ${esc(s)}</span>`).join("")}</div>
+        <a class="btn small" href="#report">${esc(t.end)}</a>
+      </div>
       <div class="row">
         <section class="col-main">
           ${camBlock(false)}
@@ -366,6 +370,10 @@
     const talk = state.phase === "talk";
     return `
     <div class="wrap" style="padding-top:24px">
+      <div class="page-head">
+        <div class="pills"><span class="pill ${talk ? "now" : "done"}">1 ${esc(t.phase1)}</span><span class="pill ${talk ? "" : "now"}">2 ${esc(t.phase2)}</span></div>
+        <a class="btn small" href="#report">${esc(t.end)}</a>
+      </div>
       <div class="row">
         <section class="col-main">
           <div class="slide">
@@ -546,6 +554,10 @@
     const rows = SERIES.tension.map((v, i) => `<tr><td>${fmt(i * SERIES.stepSec)}</td><td>${esc(phaseName(PHASE[i]))}</td><td>${v}</td><td>${SERIES.hr[i]}</td></tr>`).join("");
     return `
     <div class="wrap stack report" style="gap:24px">
+      <div class="page-head">
+        <div><h1 class="page-title">${esc(t.reportHead)}</h1><span class="muted" style="font-size:14px">${esc(t.reportSub)}</span></div>
+        <a class="btn dark small" href="#setup">${esc(t.again)}</a>
+      </div>
       <section class="card verdict">
         <div class="gauge" role="img" aria-label="${esc(t.scoreAria)}">
           ${gaugeSvg(7.4)}
@@ -598,27 +610,13 @@
     </div>`;
   }
 
-  // ---------- top bar per route ----------
-  function renderTopbar(r) {
+  // ---------- top bar: only the home link (logo) and the language switch ----------
+  function renderTopbar() {
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t[el.dataset.i18n]; });
     document.querySelectorAll("[data-lang]").forEach((b) => {
       b.classList.toggle("on", b.dataset.lang === state.lang);
       b.setAttribute("aria-pressed", b.dataset.lang === state.lang);
     });
-    let mid = "", act = "";
-    if (r === "interview") {
-      mid = t.steps.map((s, i) => `<span class="pill ${i < 2 ? "done" : i === 2 ? "now" : ""}">${i + 1} ${esc(s)}</span>`).join("");
-      act = `<a class="btn small" href="#report">${esc(t.end)}</a>`;
-    } else if (r === "present") {
-      const talk = state.phase === "talk";
-      mid = `<span class="pill ${talk ? "now" : "done"}">1 ${esc(t.phase1)}</span><span class="pill ${talk ? "" : "now"}">2 ${esc(t.phase2)}</span>`;
-      act = `<a class="btn small" href="#report">${esc(t.end)}</a>`;
-    } else if (r === "report") {
-      mid = `<span class="pill">${esc(t.reportSub)}</span>`;
-      act = `<a class="btn dark small" href="#setup">${esc(t.again)}</a>`;
-    }
-    $("topbarMid").innerHTML = mid;
-    $("topbarAction").innerHTML = act;
   }
 
   // ---------- render ----------
@@ -627,7 +625,7 @@
     const views = { intro: viewIntro, setup: viewSetup, interview: viewInterview, present: viewPresent, report: viewReport };
     const view = views[r] || viewIntro;
     document.documentElement.lang = state.lang === "en" ? "en" : "zh-Hant";
-    renderTopbar(r);
+    renderTopbar();
     $("app").innerHTML = view();
     const v = $("camVideo");
     if (v && state.camStream) v.srcObject = state.camStream;
