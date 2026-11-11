@@ -14,7 +14,7 @@
         ["模擬面試", "AI 面試官依你的履歷出題，回答太空泛會追問，每題最多 2 次。"],
         ["課堂報告", "完整講完你的報告，AI 全程不打斷，結束後依內容提出 2–3 個問題。"],
         ["即時分析", "表情、眼神、心率與語速，和你暖身時的狀態比較，找出哪一題最緊張。"],
-        ["放鬆一下", "偵測到你很緊張時，可以選擇先聽一分鐘放鬆音樂，再繼續練習。"]
+        ["放鬆一下", "偵測到你很緊張時，可以選擇一邊回答、一邊在背景播放放鬆音樂。"]
       ],
       title: "上場之前，先在這裡練一次。",
       lede: "AI 扮演面試官或台下聽眾，同時分析你的表情、眼神、聲音與心率，結束後給你一份具體的回饋報告。",
@@ -38,7 +38,7 @@
       resume: "你的履歷", resumePh: "貼上學歷、實習、社團、競賽經歷，面試官會從這裡挑題目深入追問。",
       course: "課程與報告主題", coursePh: "例：深度學習概論／期中專題報告", upload: "上傳簡報", uploadHint: "支援 .pptx、.pdf，AI 會依內容提問",
       qcount: "報告後提問數", speakLang: "練習語言", speakLangHint: "回饋報告也會使用這個語言。",
-      step3: "3　分析項目", relaxOpt: "偵測到我很緊張時，提示我可以聽一段放鬆音樂",
+      step3: "3　分析項目", relaxOpt: "偵測到我很緊張時，提示我可以一邊回答、一邊播放放鬆音樂",
       privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有你上傳的檔案和文字（履歷、職缺說明、逐字稿）會送給 AI 出題與評分。",
       startI: "開始模擬面試", startP: "開始報告練習",
       sensors: [["表情辨識", "自訓練 CNN"], ["眼神接觸", "MediaPipe 臉部偵測"], ["心率偵測", "rPPG，只用鏡頭"], ["語音分析", "語速、贅字、緊張程度"]],
@@ -49,9 +49,10 @@
       followTag: "第 3 題・追問", question: "你提到期限很趕，最後的結果是什麼？你怎麼知道這個做法有效？",
       liveTx: "即時逐字稿", answer: "那時候離交件只剩兩天，我先把工作拆成三塊，然後……",
       stop: "停止作答", repeat: "再唸一次題目",
-      alertTitle: "你好像有點緊張", alertBody: "心率比暖身時高出約 20%，聲音也偏急。要不要先聽一分鐘放鬆音樂，再繼續回答？",
-      listen: "聽 1 分鐘放鬆音樂", keepGoing: "繼續面試",
-      musicTitle: "放鬆一下", musicBody: "跟著音樂慢慢吸氣、吐氣。結束後系統會再量一次心率，看看有沒有降下來。", back: "回到面試", showAlert: "顯示緊張提示（展示用）",
+      alertTitle: "你好像有點緊張", alertBody: "心率比暖身時高出約 20%，聲音也偏急。要不要一邊回答，一邊在背景播放輕柔的放鬆音樂？",
+      listen: "播放放鬆音樂", keepGoing: "不用了",
+      musicTitle: "放鬆音樂播放中", musicBody: "音樂會在背景輕輕播放，面試照常進行。系統會比較播放前後的心率，看看有沒有降下來。",
+      musicElapsed: "已播放", volume: "音量", stopMusic: "停止音樂", showAlert: "顯示緊張提示（展示用）",
       liveTitle: "即時分析", tension: "綜合緊張程度", high: "偏高", tensionNote: "綜合表情、心率與聲音，和你暖身時的狀態比較",
       metrics: [["眼神接觸", "72%", "看鏡頭的時間比例", 0], ["表情", "緊繃", "表情辨識 CNN", 1], ["心率", "96", "bpm・暖身時 78", 1], ["語速", "偏快", "每分鐘 268 字", 1]],
       courseName: "深度學習概論・期中專題報告", presentSub: "課堂報告模式",
@@ -72,11 +73,12 @@
       chartHint: "滑過圖表，或點一下圖表後用鍵盤左右鍵，可以看每個時間點的數值。",
       chartTension: "綜合緊張程度", chartTensionSub: "0–100・綜合表情、心率與聲音，和暖身時比較",
       chartHr: "心率", chartHrSub: "bpm・虛線是暖身時的心率",
-      peak: "最高", warmup: "暖身", musicShort: "音樂",
-      tensionAlt: "緊張程度折線圖：第 3 題升到最高 88，聽完放鬆音樂後降到 44",
-      hrAlt: "心率折線圖：第 3 題升到最高 98 bpm，聽完放鬆音樂後回到 86 bpm",
+      peak: "最高", warmup: "暖身",
+      musicOn: "音樂播放中",
+      tensionAlt: "緊張程度折線圖：第 3 題升到最高 88，開始播放放鬆音樂後，第 4 題降到 48",
+      hrAlt: "心率折線圖：第 3 題升到最高 98 bpm，開始播放放鬆音樂後，第 4 題降到 86 bpm",
       tableShow: "查看資料表", tblTime: "時間", tblPhase: "階段",
-      curveNote: "第 3 題（行為題）被追問時緊張程度最高，心率升到 98 bpm；聽完一分鐘放鬆音樂後，心率回到 86 bpm，後面兩題維持穩定。",
+      curveNote: "第 3 題（行為題）被追問時緊張程度最高，心率升到 98 bpm；開始在背景播放放鬆音樂後，心率在第 4 題降到 86 bpm，之後維持穩定。",
       perQ: "逐題回饋", good: "做得好的地方", fix: "可以改進", youSaid: "你說的原句", better: "改進版本參考",
       fillNote: "〔請填入〕的部分請換成你自己的真實經驗，系統不會替你編造數字。",
       qs: [
@@ -98,7 +100,7 @@
         ["Mock interview", "An AI interviewer asks about your resume and follows up on vague answers, up to 2 times per question."],
         ["Class presentation", "Give your full talk without interruption. The AI then asks 2–3 questions about your content."],
         ["Live analysis", "Expression, eye contact, heart rate, and pace, compared with your warm-up to find where you got nervous."],
-        ["Take a breath", "When you seem very nervous, you can choose a one-minute music break before you continue."]
+        ["Take a breath", "When you seem very nervous, you can play relaxing background music while you keep answering."]
       ],
       title: "Practice here before the real thing.",
       lede: "AI plays your interviewer or your audience while analyzing your expressions, eye contact, voice, and heart rate. You get a specific feedback report at the end.",
@@ -121,7 +123,7 @@
       resume: "Your resume", resumePh: "Paste your education, internships, clubs, and competitions. The interviewer will pick from these.",
       course: "Course and topic", coursePh: "e.g. Intro to Deep Learning / Midterm project", upload: "Upload slides", uploadHint: ".pptx or .pdf; the AI asks questions based on them",
       qcount: "Questions after presentation", speakLang: "Practice language", speakLangHint: "Your feedback report will be in this language too.",
-      step3: "3　Analysis", relaxOpt: "When I seem very nervous, offer me a short relaxing music break",
+      step3: "3　Analysis", relaxOpt: "When I seem very nervous, offer relaxing background music while I keep answering",
       privacy: "Camera video is analyzed only in your browser and never uploaded. Only your uploaded files and text (resume, job description, transcript) are sent to the AI for questions and scoring.",
       startI: "Start mock interview", startP: "Start presentation practice",
       sensors: [["Facial expression", "Self-trained CNN"], ["Eye contact", "MediaPipe face detection"], ["Heart rate", "rPPG, camera only"], ["Voice analysis", "Pace, fillers, nervousness"]],
@@ -132,9 +134,10 @@
       followTag: "Question 3 · Follow-up", question: "You mentioned a tight deadline. What was the final outcome, and how do you know it worked?",
       liveTx: "Live transcript", answer: "We only had two days left, so I first split the work into three parts, and then…",
       stop: "Stop answering", repeat: "Repeat question",
-      alertTitle: "You seem a bit nervous", alertBody: "Your heart rate is about 20% above your warm-up level, and your voice sounds rushed. Want a one-minute music break before you continue?",
-      listen: "Play 1 min of relaxing music", keepGoing: "Keep going",
-      musicTitle: "Take a breath", musicBody: "Breathe slowly with the music. Afterward, the system checks your heart rate again to see if it came down.", back: "Back to interview", showAlert: "Show nervousness alert (demo)",
+      alertTitle: "You seem a bit nervous", alertBody: "Your heart rate is about 20% above your warm-up level, and your voice sounds rushed. Want some soft relaxing music in the background while you keep answering?",
+      listen: "Play relaxing music", keepGoing: "No thanks",
+      musicTitle: "Relaxing music on", musicBody: "The music plays softly in the background while the interview continues. The system compares your heart rate before and during the music.",
+      musicElapsed: "Playing for", volume: "Volume", stopMusic: "Stop music", showAlert: "Show nervousness alert (demo)",
       liveTitle: "Live analysis", tension: "Overall nervousness", high: "High", tensionNote: "Combines expression, heart rate, and voice, compared with your warm-up",
       metrics: [["Eye contact", "72%", "Time looking at camera", 0], ["Expression", "Tense", "Expression CNN", 1], ["Heart rate", "96", "bpm · warm-up 78", 1], ["Pace", "Fast", "162 words per min", 1]],
       courseName: "Intro to Deep Learning · Midterm Project", presentSub: "Presentation mode",
@@ -155,11 +158,12 @@
       chartHint: "Hover over a chart, or click it and use the left/right arrow keys, to see each moment.",
       chartTension: "Overall nervousness", chartTensionSub: "0–100 · expression, heart rate, and voice vs. warm-up",
       chartHr: "Heart rate", chartHrSub: "bpm · dashed line is your warm-up rate",
-      peak: "Peak", warmup: "Warm-up", musicShort: "Music",
-      tensionAlt: "Line chart of nervousness: peaks at 88 on question 3, drops to 44 after the music break",
-      hrAlt: "Line chart of heart rate: peaks at 98 bpm on question 3, back to 86 bpm after the music break",
+      peak: "Peak", warmup: "Warm-up",
+      musicOn: "Music on",
+      tensionAlt: "Line chart of nervousness: peaks at 88 on question 3, falls to 48 by question 4 after the relaxing music starts",
+      hrAlt: "Line chart of heart rate: peaks at 98 bpm on question 3, falls to 86 bpm by question 4 after the relaxing music starts",
       tableShow: "Show data table", tblTime: "Time", tblPhase: "Stage",
-      curveNote: "Nervousness peaked during the follow-up on question 3 (behavioral), with heart rate at 98 bpm. After a one-minute music break it returned to 86 bpm and stayed steady.",
+      curveNote: "Nervousness peaked during the follow-up on question 3 (behavioral), with heart rate at 98 bpm. After relaxing background music started, heart rate fell to 86 bpm by question 4 and stayed steady.",
       perQ: "Question by question", good: "What went well", fix: "What to improve", youSaid: "What you said", better: "Suggested version",
       fillNote: "Replace the [Fill in] parts with your own real experience. The system never invents numbers for you.",
       qs: [
@@ -180,6 +184,7 @@
     panel: "alert",       // alert | music | none
     phase: "talk",        // talk | qa
     sel: 2,
+    volume: 40,           // relaxing-music volume 0–100 (applied once real audio is connected)
     // Setup form values, kept here so re-rendering (mode / language switch) doesn't wipe what the user typed.
     // These are what the backend /api/start call will need.
     form: { track: 0, job: 0, jd: "", resume: "", speakLang: "" },  // speakLang "" = follow UI language; report uses the same language
@@ -189,7 +194,7 @@
   };
   let t = I18N[state.lang];
   let timerId = null, seconds = 0;
-  let music = null;
+  let music = null, musicSec = 0;
 
   function loadLang() {
     try { return localStorage.getItem("coach-lang") === "en" ? "en" : "zh"; } catch (e) { return "zh"; }
@@ -431,11 +436,14 @@
           <div class="acts"><button type="button" class="btn warn small" data-action="music">${esc(t.listen)}</button><button type="button" class="btn small" data-action="dismiss">${esc(t.keepGoing)}</button></div>
         </div>` :
       state.panel === "music" ? `
-        <div class="music">
-          <b style="font-size:16px">${esc(t.musicTitle)}</b><p>${esc(t.musicBody)}</p>
-          <div class="bar"><div id="musicBar"></div></div>
-          <div style="display:flex;justify-content:space-between;font-size:13px;color:#DCE8F1"><span id="musicTime">0:00 / 1:00</span></div>
-          <button type="button" class="btn small" data-action="dismiss">${esc(t.back)}</button>
+        <div class="music" role="status">
+          <div class="music-head"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>${esc(t.musicTitle)}</b></div>
+          <p>${esc(t.musicBody)}</p>
+          <div class="music-row">
+            <label class="vol">${esc(t.volume)}<input type="range" min="0" max="100" value="${state.volume}" data-field="volume"></label>
+            <span id="musicTime">${esc(t.musicElapsed)} ${fmt(musicSec)}</span>
+          </div>
+          <div><button type="button" class="btn small" data-action="dismiss">${esc(t.stopMusic)}</button></div>
         </div>` :
       `<button type="button" class="btn small" data-action="showAlert">${esc(t.showAlert)}</button>`;
     return `
@@ -517,16 +525,19 @@
   }
 
   // ---------- report charts (sample data until the backend is connected) ----------
-  // One sample every 30 s. PHASE: 1–5 = question number, 0 = relax-music break.
+  // One sample every 30 s. PHASE = question number at each sample.
+  // music = sample range where relaxing music played in the background (the interview kept going).
   const SERIES = {
     stepSec: 30,
-    tension: [30, 34, 40, 46, 72, 88, 84, 60, 44, 46, 49, 52, 50],
-    hr: [80, 82, 85, 88, 95, 98, 97, 91, 86, 86, 87, 88, 87],
-    music: [6, 8],
-    segs: [[1, 0, 2], [2, 2, 4], [3, 4, 6], [0, 6, 8], [4, 8, 10], [5, 10, 12]]
+    tension: [30, 34, 40, 46, 72, 88, 80, 62, 52, 48, 49, 52, 50],
+    hr: [80, 82, 85, 88, 95, 98, 95, 91, 88, 86, 87, 88, 87],
+    music: [6, 10],
+    segs: [[1, 0, 2], [2, 2, 4], [3, 4, 7], [4, 7, 10], [5, 10, 12]]
   };
-  const PHASE = [1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 5];
-  const phaseName = (p) => (p ? "Q" + p : t.musicShort);
+  const PHASE = [1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5];
+  const phaseName = (p) => "Q" + p;
+  const inMusic = (i) => i >= SERIES.music[0] && i <= SERIES.music[1];
+  const stageLabel = (i) => phaseName(PHASE[i]) + (inMusic(i) ? "・" + t.musicOn : "");
   // Two separate charts on purpose: never put two different units on one y-axis.
   const CHARTS = [
     { key: "tension", min: 0, max: 100, ticks: [0, 50, 100] },
@@ -600,6 +611,7 @@
     plot.innerHTML = `
       <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" tabindex="0" role="img" aria-label="${esc(c.key === "hr" ? t.hrAlt : t.tensionAlt)}">
         <rect class="ch-music" x="${x(m0)}" y="${T - 12}" width="${x(m1) - x(m0)}" height="${h - B - T + 12}" rx="6"/>
+        <text class="ch-tick ch-halo" x="${x(m0) + 6}" y="${h - B - 8}">${esc(t.musicOn)}</text>
         ${c.ticks.map((v) => `<line class="ch-gl" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ch-tick" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join("")}
         ${c.baseline ? `<line class="ch-base" x1="${L}" x2="${w - R}" y1="${y(c.baseline)}" y2="${y(c.baseline)}"/><text class="ch-tick ch-halo" x="${w - R}" y="${y(c.baseline) - 6}" text-anchor="end">${esc(t.warmup)} ${c.baseline}</text>` : ""}
         ${SERIES.segs.map(([p, a, b]) => `<text class="ch-tick" x="${(x(a) + x(b)) / 2}" y="${h - 8}" text-anchor="middle">${esc(phaseName(p))}</text>`).join("")}
@@ -643,7 +655,7 @@
     const row = (val, name) => { const r = el("div", "ch-tip-r"); r.append(el("i"), el("b", null, val), el("span", null, name)); return r; };
     const tip = owner.tip;
     tip.replaceChildren(
-      el("div", "ch-tip-h", `${phaseName(PHASE[i])} · ${fmt(i * SERIES.stepSec)}`),
+      el("div", "ch-tip-h", `${stageLabel(i)} · ${fmt(i * SERIES.stepSec)}`),
       row(String(SERIES.tension[i]), t.chartTension),
       row(SERIES.hr[i] + " bpm", t.chartHr)
     );
@@ -657,7 +669,7 @@
 
   function viewReport() {
     const q = t.qs[state.sel];
-    const rows = SERIES.tension.map((v, i) => `<tr><td>${fmt(i * SERIES.stepSec)}</td><td>${esc(phaseName(PHASE[i]))}</td><td>${v}</td><td>${SERIES.hr[i]}</td></tr>`).join("");
+    const rows = SERIES.tension.map((v, i) => `<tr><td>${fmt(i * SERIES.stepSec)}</td><td>${esc(stageLabel(i))}</td><td>${v}</td><td>${SERIES.hr[i]}</td></tr>`).join("");
     return `
     <div class="wrap stack report" style="gap:24px">
       <div class="page-head">
@@ -778,22 +790,24 @@
     state.camStream = null;
   }
 
-  // ---------- relax break (visual only; music will come from the team's music API later) ----------
+  // ---------- relaxing background music (plays while the interview continues) ----------
+  // Visual only for now. When the team's music API is ready, create the audio in startMusic, e.g.
+  //   music.audio = new Audio(url); music.audio.loop = true; music.audio.volume = state.volume / 100; music.audio.play();
+  // and pause it in stopMusic. It keeps playing until the user stops it or leaves the page.
   function startMusic() {
     stopMusic();
-    let s = 0;
+    musicSec = 0;
     const tick = setInterval(() => {
-      s++;
-      const bar = $("musicBar"), tm = $("musicTime");
-      if (bar) bar.style.width = Math.min(100, (s / 60) * 100) + "%";
-      if (tm) tm.textContent = fmt(s) + " / 1:00";
-      if (s >= 60) { stopMusic(); state.panel = "none"; render(); }
+      musicSec++;
+      const tm = $("musicTime");
+      if (tm) tm.textContent = t.musicElapsed + " " + fmt(musicSec);
     }, 1000);
-    music = { tick };
+    music = { tick, audio: null };
   }
   function stopMusic() {
     if (!music) return;
     clearInterval(music.tick);
+    if (music.audio) music.audio.pause();
     music = null;
   }
 
@@ -867,6 +881,10 @@
       const js = $("jobSel");
       if (js) js.innerHTML = jobOptions();
     } else if (k === "job") state.form.job = Number(e.target.value);
+    else if (k === "volume") {
+      state.volume = Number(e.target.value);
+      if (music && music.audio) music.audio.volume = state.volume / 100;
+    }
     else state.form[k] = e.target.value;
   });
 

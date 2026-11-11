@@ -16,7 +16,8 @@ app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
 - 五個畫面：首頁簡介 → 設定 → 面試進行中／課堂報告 → 回饋報告（網址 `#intro`、`#setup`、`#interview`、`#present`、`#report`）
 - 右上角中文／English 切換，會記住選擇
 - 「開啟鏡頭」顯示真的鏡頭畫面（只在瀏覽器裡，不上傳）
-- 「聽 1 分鐘放鬆音樂」目前只有畫面和倒數，沒有聲音；之後接上組員測試的音樂 API
+- 偵測到緊張時可以「播放放鬆音樂」：面試照常進行，音樂在背景播放，直到使用者停止。目前只有畫面、計時和音量條，沒有聲音；之後接上組員測試的音樂 API（接的位置見 app.js 的 `startMusic`）
+  Relaxing music plays in the background while the interview continues. Visual only for now; hook the team's music API into `startMusic` in app.js.
 - 「再唸一次題目」用瀏覽器內建語音朗讀
 - 職缺說明、履歷可以上傳 PDF／Word（.docx）／TXT／Markdown（.md）／JPG／PNG 或拖曳檔案；檔案原樣交給後端，再由後端送給 Gemini 讀取
   Job description and resume accept PDF / Word (.docx) / TXT / Markdown (.md) / JPG / PNG (upload or drag and drop). Files are sent as-is to the backend, which passes them to Gemini.
