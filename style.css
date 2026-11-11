@@ -187,6 +187,13 @@ h1, h2, h3 { margin: 0; }
 .upl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .upl .muted { font-weight: 400; }
 .upl .muted.err { color: var(--warn); }
+.file-chip {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 38px; padding: 4px 4px 4px 12px;
+  border: 1px solid var(--accent-ring); border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-size: 14px;
+}
+.file-chip .fname { color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; }
+.chip-x { width: 30px; height: 30px; border: 0; border-radius: 7px; background: transparent; color: var(--ink-3); font-size: 18px; line-height: 1; cursor: pointer; }
+.chip-x:hover { background: var(--surface); color: var(--ink); }
 .drop { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; border: 1px dashed var(--ink-3); border-radius: 10px; padding: 14px; }
 .sensor { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line-soft); }
 .sensor:last-child { border-bottom: 0; }

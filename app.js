@@ -32,15 +32,14 @@
       ],
       jd: "職缺說明（選填）", jdPh: "貼上職缺的工作內容、條件要求與加分條件。",
       jdHint: "貼了之後，AI 會挑出這個職缺最重視的能力來出題與評分；沒貼就依領域和職缺名稱出題。",
-      uploadFile: "上傳檔案", fileTypes: "PDF、Word（.docx）、TXT，也可以直接拖曳到文字框",
-      reading: "正在讀取 {name}…", readDone: "已從 {name} 讀入文字，可以直接修改。", cut: "內容較長，只保留前 {n} 字。",
-      errType: "只支援 PDF、Word（.docx）、TXT。舊版 .doc 請先另存成 .docx。", errBig: "檔案超過 10 MB。",
-      errEmpty: "讀不到文字，可能是掃描檔或圖片，請直接貼上內容。", errLoad: "讀取失敗，請檢查網路，或改成直接貼上內容。",
+      uploadFile: "上傳檔案", fileTypes: "PDF、Word（.docx）、TXT、圖片（JPG／PNG），也可以直接拖曳到文字框",
+      fileSent: "檔案會直接交給 AI 讀取；上面的文字框可以再補充說明。", removeFile: "移除檔案",
+      errType: "只支援 PDF、Word（.docx）、TXT、JPG、PNG。舊版 .doc 請先另存成 .docx。", errBig: "檔案超過 10 MB。",
       resume: "你的履歷", resumePh: "貼上學歷、實習、社團、競賽經歷，面試官會從這裡挑題目深入追問。",
       course: "課程與報告主題", coursePh: "例：深度學習概論／期中專題報告", upload: "上傳簡報", uploadHint: "支援 .pptx、.pdf，AI 會依內容提問",
       qcount: "報告後提問數", speakLang: "練習語言", speakLangHint: "回饋報告也會使用這個語言。",
       step3: "3　分析項目", relaxOpt: "偵測到我很緊張時，提示我可以聽一段放鬆音樂",
-      privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有文字（履歷、職缺說明、逐字稿）會送給 AI 出題與評分。",
+      privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有你上傳的檔案和文字（履歷、職缺說明、逐字稿）會送給 AI 出題與評分。",
       startI: "開始模擬面試", startP: "開始報告練習",
       sensors: [["表情辨識", "自訓練 CNN"], ["眼神接觸", "MediaPipe 臉部偵測"], ["心率偵測", "rPPG，只用鏡頭"], ["語音分析", "語速、贅字、緊張程度"]],
       on: "已開啟",
@@ -116,15 +115,14 @@
       ],
       jd: "Job description (optional)", jdPh: "Paste the responsibilities, requirements, and nice-to-haves from the job posting.",
       jdHint: "If you paste it, the AI focuses its questions and scoring on what this job values most. Otherwise it uses the field and position name.",
-      uploadFile: "Upload file", fileTypes: "PDF, Word (.docx), or TXT. You can also drag a file onto the text box.",
-      reading: "Reading {name}…", readDone: "Text loaded from {name}. You can edit it.", cut: "It was long, so only the first {n} characters were kept.",
-      errType: "Only PDF, Word (.docx), and TXT are supported. Save old .doc files as .docx first.", errBig: "The file is larger than 10 MB.",
-      errEmpty: "No text found. It may be a scanned file or an image, so please paste the text instead.", errLoad: "Couldn’t read the file. Check your connection, or paste the text instead.",
+      uploadFile: "Upload file", fileTypes: "PDF, Word (.docx), TXT, or an image (JPG/PNG). You can also drag a file onto the text box.",
+      fileSent: "The AI reads this file directly. You can add notes in the text box above.", removeFile: "Remove file",
+      errType: "Only PDF, Word (.docx), TXT, JPG, and PNG are supported. Save old .doc files as .docx first.", errBig: "The file is larger than 10 MB.",
       resume: "Your resume", resumePh: "Paste your education, internships, clubs, and competitions. The interviewer will pick from these.",
       course: "Course and topic", coursePh: "e.g. Intro to Deep Learning / Midterm project", upload: "Upload slides", uploadHint: ".pptx or .pdf; the AI asks questions based on them",
       qcount: "Questions after presentation", speakLang: "Practice language", speakLangHint: "Your feedback report will be in this language too.",
       step3: "3　Analysis", relaxOpt: "When I seem very nervous, offer me a short relaxing music break",
-      privacy: "Camera video is analyzed only in your browser and never uploaded. Only text (resume, job description, transcript) is sent to the AI for questions and scoring.",
+      privacy: "Camera video is analyzed only in your browser and never uploaded. Only your uploaded files and text (resume, job description, transcript) are sent to the AI for questions and scoring.",
       startI: "Start mock interview", startP: "Start presentation practice",
       sensors: [["Facial expression", "Self-trained CNN"], ["Eye contact", "MediaPipe face detection"], ["Heart rate", "rPPG, camera only"], ["Voice analysis", "Pace, fillers, nervousness"]],
       on: "On",
@@ -185,6 +183,7 @@
     // Setup form values, kept here so re-rendering (mode / language switch) doesn't wipe what the user typed.
     // These are what the backend /api/start call will need.
     form: { track: 0, job: 0, jd: "", resume: "", speakLang: "" },  // speakLang "" = follow UI language; report uses the same language
+    files: { jd: null, resume: null },  // attached File objects, sent as-is to the backend (see buildStartForm)
     camStream: null,
     camError: false
   };
@@ -293,77 +292,61 @@
     </div>`;
   }
 
-  // ---------- file upload -> text (runs in the browser; only the extracted text is kept) ----------
-  // pdf.js and mammoth.js are loaded from the CDN only when someone actually uploads a file.
-  const LIBS = {
-    pdf: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
-    pdfWorker: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js",
-    docx: "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"
-  };
-  const scriptCache = {};
-  function loadScript(src) {
-    if (!scriptCache[src]) {
-      scriptCache[src] = new Promise((resolve, reject) => {
-        const s = document.createElement("script");
-        s.src = src;
-        s.onload = resolve;
-        s.onerror = () => { delete scriptCache[src]; reject(new Error("load")); };
-        document.head.appendChild(s);
-      });
-    }
-    return scriptCache[src];
+  // ---------- file attachments (job description / resume) ----------
+  // Files are NOT parsed in the browser. They are kept as File objects and sent as-is to the backend,
+  // which passes them to Gemini. Gemini reads PDF, images, and plain text directly;
+  // .docx is not supported by Gemini, so the backend must convert it to text first (e.g. python-docx).
+  const ACCEPT = [".pdf", ".docx", ".txt", ".md", ".png", ".jpg", ".jpeg"];
+  const MAX_FILE = 10 * 1024 * 1024;
+  const fmtSize = (b) => (b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + " KB" : (b / 1024 / 1024).toFixed(1) + " MB");
+
+  function setFileStatus(key, msg, bad) {
+    const st = $(key + "Status");
+    if (st) { st.textContent = msg; st.classList.toggle("err", !!bad); }
+  }
+  function refreshUpload(key) {
+    const row = $(key + "Upl");
+    if (row) row.outerHTML = uploadRow(key);
+  }
+  function handleUpload(key, file) {
+    if (!file) return;
+    if (!ACCEPT.some((ext) => file.name.toLowerCase().endsWith(ext))) return setFileStatus(key, t.errType, true);
+    if (file.size > MAX_FILE) return setFileStatus(key, t.errBig, true);
+    state.files[key] = file;
+    refreshUpload(key);
   }
 
-  async function fileToText(file) {
-    const name = file.name.toLowerCase();
-    if (name.endsWith(".txt") || name.endsWith(".md")) return file.text();
-    if (name.endsWith(".pdf")) {
-      await loadScript(LIBS.pdf);
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
-      const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
-      const pages = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const content = await (await pdf.getPage(i)).getTextContent();
-        pages.push(content.items.map((it) => it.str + (it.hasEOL ? "\n" : "")).join(""));
-      }
-      return pages.join("\n\n");
-    }
-    if (name.endsWith(".docx")) {
-      await loadScript(LIBS.docx);
-      return (await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value;
-    }
-    throw new Error("type");
-  }
-
-  async function handleUpload(key, file) {
-    const st = $(key + "Status"), ta = document.querySelector(`textarea[data-field="${key}"]`);
-    if (!file || !ta) return;
-    const say = (msg, bad) => { if (st) { st.textContent = msg; st.classList.toggle("err", !!bad); } };
-    if (file.size > 10 * 1024 * 1024) return say(t.errBig, true);
-    say(t.reading.replace("{name}", file.name));
-    try {
-      let text = (await fileToText(file))
-        .replace(/\r/g, "").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
-      if (!text) return say(t.errEmpty, true);
-      const max = Number(ta.getAttribute("maxlength")) || Infinity;
-      const cut = text.length > max;
-      text = text.slice(0, max);
-      ta.value = text;
-      state.form[key] = text;
-      say(t.readDone.replace("{name}", file.name) + (cut ? " " + t.cut.replace("{n}", max) : ""));
-    } catch (e) {
-      say(e.message === "type" ? t.errType : t.errLoad, true);
-    }
-  }
-
-  const uploadRow = (key) => `
-    <div class="upl">
-      <button type="button" class="btn small" data-action="pick" data-value="${key}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v4h16v-4"/></svg>${esc(t.uploadFile)}
-      </button>
-      <input type="file" id="${key}File" data-upload="${key}" accept=".pdf,.docx,.txt,.md" hidden>
-      <span class="muted" id="${key}Status" role="status">${esc(t.fileTypes)}</span>
+  const uploadIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v4h16v-4"/></svg>';
+  const fileIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
+  function uploadRow(key) {
+    const f = state.files[key];
+    return `
+    <div class="upl" id="${key}Upl">
+      ${f ? `
+        <span class="file-chip">${fileIcon}<span class="fname" title="${esc(f.name)}">${esc(f.name)}</span><span class="muted">${fmtSize(f.size)}</span>
+          <button type="button" class="chip-x" data-action="unfile" data-value="${key}" aria-label="${esc(t.removeFile)}">×</button></span>
+        <span class="muted" id="${key}Status" role="status">${esc(t.fileSent)}</span>` : `
+        <button type="button" class="btn small" data-action="pick" data-value="${key}">${uploadIcon}${esc(t.uploadFile)}</button>
+        <span class="muted" id="${key}Status" role="status">${esc(t.fileTypes)}</span>`}
+      <input type="file" id="${key}File" data-upload="${key}" accept="${ACCEPT.join(",")}" hidden>
     </div>`;
+  }
+
+  // What the backend /api/start call will receive (not connected yet). Send with fetch(url, { method: "POST", body: buildStartForm() }).
+  function buildStartForm() {
+    const f = state.form, fd = new FormData();
+    const jobs = I18N.en.tracks[f.track][1];
+    fd.append("mode", state.mode);                      // "interview" | "present"
+    fd.append("track", I18N.en.tracks[f.track][0]);     // English name, stable across UI languages
+    fd.append("job", f.job < jobs.length ? jobs[f.job] : "other");
+    fd.append("lang", f.speakLang || state.lang);       // "zh" | "en": questions, follow-ups, and report language
+    fd.append("jd_text", f.jd);
+    fd.append("resume_text", f.resume);
+    if (state.files.jd) fd.append("jd_file", state.files.jd);
+    if (state.files.resume) fd.append("resume_file", state.files.resume);
+    return fd;
+  }
+  window.buildStartForm = buildStartForm;  // exposed for teammates to inspect in the browser console
 
   function jobOptions() {
     const f = state.form;
@@ -846,6 +829,7 @@
     else if (a === "sel") { state.sel = Number(el.dataset.value); render(); }
     else if (a === "speak") speak();
     else if (a === "pick") { const inp = $(el.dataset.value + "File"); if (inp) inp.click(); }
+    else if (a === "unfile") { state.files[el.dataset.value] = null; refreshUpload(el.dataset.value); }
   });
 
   // File chosen with the upload button
