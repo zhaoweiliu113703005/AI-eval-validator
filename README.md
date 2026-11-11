@@ -18,8 +18,8 @@ app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
 - 「開啟鏡頭」顯示真的鏡頭畫面（只在瀏覽器裡，不上傳）
 - 「聽 1 分鐘放鬆音樂」目前只有畫面和倒數，沒有聲音；之後接上組員測試的音樂 API
 - 「再唸一次題目」用瀏覽器內建語音朗讀
-- 職缺說明、履歷可以上傳 PDF／Word（.docx）／TXT／JPG／PNG 或拖曳檔案；檔案原樣交給後端，再由後端送給 Gemini 讀取
-  Job description and resume accept PDF / Word (.docx) / TXT / JPG / PNG (upload or drag and drop). Files are sent as-is to the backend, which passes them to Gemini.
+- 職缺說明、履歷可以上傳 PDF／Word（.docx）／TXT／Markdown（.md）／JPG／PNG 或拖曳檔案；檔案原樣交給後端，再由後端送給 Gemini 讀取
+  Job description and resume accept PDF / Word (.docx) / TXT / Markdown (.md) / JPG / PNG (upload or drag and drop). Files are sent as-is to the backend, which passes them to Gemini.
 
 ## 給後端 / For the backend: `/api/start`
 
@@ -35,7 +35,7 @@ The front end builds a `multipart/form-data` body with `buildStartForm()` in app
 | `jd_text`, `resume_text` | text typed or pasted by the user (may be empty) |
 | `jd_file`, `resume_file` | optional uploaded file (max 10 MB) |
 
-Gemini reads PDF, JPG/PNG, and plain text files directly. **It does not read .docx**, so convert .docx to text on the backend first (for example with `python-docx`).
+Gemini reads PDF, JPG/PNG, and plain text files directly (send .txt and .md as `text/plain`). **It does not read .docx**, so convert .docx to text on the backend first (for example with `python-docx`).
 
 ## 部署到 Vercel / Deploy to Vercel
 
