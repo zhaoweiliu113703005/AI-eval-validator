@@ -18,6 +18,8 @@ app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
 - 「開啟鏡頭」顯示真的鏡頭畫面（只在瀏覽器裡，不上傳）
 - 「聽 1 分鐘放鬆音樂」目前只有畫面和倒數，沒有聲音；之後接上組員測試的音樂 API
 - 「再唸一次題目」用瀏覽器內建語音朗讀
+- 職缺說明、履歷可以上傳 PDF／Word（.docx）／TXT 或拖曳檔案，在瀏覽器裡轉成文字（pdf.js、mammoth.js，用到時才從 CDN 載入）；檔案本身不上傳
+  Job description and resume accept PDF / Word (.docx) / TXT uploads (or drag and drop). Files are converted to text in the browser with pdf.js and mammoth.js (loaded from the CDN on first use); the file itself is never uploaded.
 
 ## 部署到 Vercel / Deploy to Vercel
 

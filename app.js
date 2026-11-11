@@ -32,6 +32,10 @@
       ],
       jd: "職缺說明（選填）", jdPh: "貼上職缺的工作內容、條件要求與加分條件。",
       jdHint: "貼了之後，AI 會挑出這個職缺最重視的能力來出題與評分；沒貼就依領域和職缺名稱出題。",
+      uploadFile: "上傳檔案", fileTypes: "PDF、Word（.docx）、TXT，也可以直接拖曳到文字框",
+      reading: "正在讀取 {name}…", readDone: "已從 {name} 讀入文字，可以直接修改。", cut: "內容較長，只保留前 {n} 字。",
+      errType: "只支援 PDF、Word（.docx）、TXT。舊版 .doc 請先另存成 .docx。", errBig: "檔案超過 10 MB。",
+      errEmpty: "讀不到文字，可能是掃描檔或圖片，請直接貼上內容。", errLoad: "讀取失敗，請檢查網路，或改成直接貼上內容。",
       resume: "你的履歷", resumePh: "貼上學歷、實習、社團、競賽經歷，面試官會從這裡挑題目深入追問。",
       course: "課程與報告主題", coursePh: "例：深度學習概論／期中專題報告", upload: "上傳簡報", uploadHint: "支援 .pptx、.pdf，AI 會依內容提問",
       qcount: "報告後提問數", speakLang: "練習語言", speakLangHint: "回饋報告也會使用這個語言。",
@@ -112,6 +116,10 @@
       ],
       jd: "Job description (optional)", jdPh: "Paste the responsibilities, requirements, and nice-to-haves from the job posting.",
       jdHint: "If you paste it, the AI focuses its questions and scoring on what this job values most. Otherwise it uses the field and position name.",
+      uploadFile: "Upload file", fileTypes: "PDF, Word (.docx), or TXT. You can also drag a file onto the text box.",
+      reading: "Reading {name}…", readDone: "Text loaded from {name}. You can edit it.", cut: "It was long, so only the first {n} characters were kept.",
+      errType: "Only PDF, Word (.docx), and TXT are supported. Save old .doc files as .docx first.", errBig: "The file is larger than 10 MB.",
+      errEmpty: "No text found. It may be a scanned file or an image, so please paste the text instead.", errLoad: "Couldn’t read the file. Check your connection, or paste the text instead.",
       resume: "Your resume", resumePh: "Paste your education, internships, clubs, and competitions. The interviewer will pick from these.",
       course: "Course and topic", coursePh: "e.g. Intro to Deep Learning / Midterm project", upload: "Upload slides", uploadHint: ".pptx or .pdf; the AI asks questions based on them",
       qcount: "Questions after presentation", speakLang: "Practice language", speakLangHint: "Your feedback report will be in this language too.",
@@ -285,6 +293,78 @@
     </div>`;
   }
 
+  // ---------- file upload -> text (runs in the browser; only the extracted text is kept) ----------
+  // pdf.js and mammoth.js are loaded from the CDN only when someone actually uploads a file.
+  const LIBS = {
+    pdf: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    pdfWorker: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js",
+    docx: "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"
+  };
+  const scriptCache = {};
+  function loadScript(src) {
+    if (!scriptCache[src]) {
+      scriptCache[src] = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => { delete scriptCache[src]; reject(new Error("load")); };
+        document.head.appendChild(s);
+      });
+    }
+    return scriptCache[src];
+  }
+
+  async function fileToText(file) {
+    const name = file.name.toLowerCase();
+    if (name.endsWith(".txt") || name.endsWith(".md")) return file.text();
+    if (name.endsWith(".pdf")) {
+      await loadScript(LIBS.pdf);
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+      const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      const pages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const content = await (await pdf.getPage(i)).getTextContent();
+        pages.push(content.items.map((it) => it.str + (it.hasEOL ? "\n" : "")).join(""));
+      }
+      return pages.join("\n\n");
+    }
+    if (name.endsWith(".docx")) {
+      await loadScript(LIBS.docx);
+      return (await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value;
+    }
+    throw new Error("type");
+  }
+
+  async function handleUpload(key, file) {
+    const st = $(key + "Status"), ta = document.querySelector(`textarea[data-field="${key}"]`);
+    if (!file || !ta) return;
+    const say = (msg, bad) => { if (st) { st.textContent = msg; st.classList.toggle("err", !!bad); } };
+    if (file.size > 10 * 1024 * 1024) return say(t.errBig, true);
+    say(t.reading.replace("{name}", file.name));
+    try {
+      let text = (await fileToText(file))
+        .replace(/\r/g, "").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+      if (!text) return say(t.errEmpty, true);
+      const max = Number(ta.getAttribute("maxlength")) || Infinity;
+      const cut = text.length > max;
+      text = text.slice(0, max);
+      ta.value = text;
+      state.form[key] = text;
+      say(t.readDone.replace("{name}", file.name) + (cut ? " " + t.cut.replace("{n}", max) : ""));
+    } catch (e) {
+      say(e.message === "type" ? t.errType : t.errLoad, true);
+    }
+  }
+
+  const uploadRow = (key) => `
+    <div class="upl">
+      <button type="button" class="btn small" data-action="pick" data-value="${key}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v4h16v-4"/></svg>${esc(t.uploadFile)}
+      </button>
+      <input type="file" id="${key}File" data-upload="${key}" accept=".pdf,.docx,.txt,.md" hidden>
+      <span class="muted" id="${key}Status" role="status">${esc(t.fileTypes)}</span>
+    </div>`;
+
   function jobOptions() {
     const f = state.form;
     return t.tracks[f.track][1].concat(t.otherJob)
@@ -320,8 +400,17 @@
                   <label class="field">${esc(t.track)}<select data-field="track">${t.tracks.map((tr, i) => `<option value="${i}"${i === f.track ? " selected" : ""}>${esc(tr[0])}</option>`).join("")}</select></label>
                   <label class="field">${esc(t.job)}<select data-field="job" id="jobSel">${jobOptions()}</select></label>
                 </div>
-                <label class="field">${esc(t.jd)}<textarea data-field="jd" rows="5" maxlength="6000" placeholder="${esc(t.jdPh)}">${esc(f.jd)}</textarea><span class="note" style="font-weight:400">${esc(t.jdHint)}</span></label>
-                <label class="field">${esc(t.resume)}<textarea data-field="resume" rows="4" placeholder="${esc(t.resumePh)}">${esc(f.resume)}</textarea></label>
+                <div class="field">
+                  <label for="jdText">${esc(t.jd)}</label>
+                  <textarea id="jdText" data-field="jd" data-drop rows="5" maxlength="6000" placeholder="${esc(t.jdPh)}">${esc(f.jd)}</textarea>
+                  ${uploadRow("jd")}
+                  <span class="note" style="font-weight:400">${esc(t.jdHint)}</span>
+                </div>
+                <div class="field">
+                  <label for="resumeText">${esc(t.resume)}</label>
+                  <textarea id="resumeText" data-field="resume" data-drop rows="5" maxlength="8000" placeholder="${esc(t.resumePh)}">${esc(f.resume)}</textarea>
+                  ${uploadRow("resume")}
+                </div>
               ` : `
                 <label class="field">${esc(t.course)}<input placeholder="${esc(t.coursePh)}"></label>
                 <div class="drop">
@@ -756,6 +845,32 @@
     else if (a === "toTalk") { state.phase = "talk"; render(); }
     else if (a === "sel") { state.sel = Number(el.dataset.value); render(); }
     else if (a === "speak") speak();
+    else if (a === "pick") { const inp = $(el.dataset.value + "File"); if (inp) inp.click(); }
+  });
+
+  // File chosen with the upload button
+  document.addEventListener("change", (e) => {
+    const key = e.target.dataset && e.target.dataset.upload;
+    if (!key) return;
+    const file = e.target.files[0];
+    e.target.value = "";  // allow choosing the same file again
+    handleUpload(key, file);
+  });
+
+  // Drag a file onto the job description / resume text box (plain text drops still work normally)
+  const dropTarget = (e) => (e.target.closest ? e.target.closest("textarea[data-drop]") : null);
+  document.addEventListener("dragover", (e) => {
+    const ta = dropTarget(e);
+    if (ta) { e.preventDefault(); ta.classList.add("dragging"); }
+  });
+  document.addEventListener("dragleave", (e) => { const ta = dropTarget(e); if (ta) ta.classList.remove("dragging"); });
+  document.addEventListener("drop", (e) => {
+    const ta = dropTarget(e);
+    if (!ta) return;
+    ta.classList.remove("dragging");
+    if (!e.dataTransfer.files.length) return;
+    e.preventDefault();
+    handleUpload(ta.dataset.field, e.dataTransfer.files[0]);
   });
 
   // Setup form: remember values; changing the field swaps the position list in place (no re-render).
