@@ -22,15 +22,13 @@ app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
 ## 部署到 Vercel / Deploy to Vercel
 
 **方法一：GitHub（建議，組員可以一起改）**
-1. 在 GitHub 建一個新的 repository，把這三個檔案（和 README）上傳上去。
-2. 到 vercel.com 用 GitHub 帳號登入，按「Add New… → Project」。
-3. 選剛剛的 repository，Framework Preset 選 **Other**，其他設定都不用改，按 Deploy。
-4. 完成後會拿到一個 `xxx.vercel.app` 網址。之後每次推新的程式到 GitHub，網站會自動更新。
+1. 到 vercel.com 用 GitHub 帳號登入，按「Add New… → Project」。
+2. 選 `AI-eval-validator` 這個 repository，Framework Preset 選 **Other**，Root Directory 維持預設（根目錄），按 Deploy。
+3. 完成後會拿到一個 `xxx.vercel.app` 網址。之後每次推新的程式到 `main`，網站會自動更新。
 
-**方法二：指令列**
+**方法二：指令列**（在 repository 根目錄執行）
 ```
 npm i -g vercel
-cd ai-coach-frontend
 vercel
 ```
 照提示登入、按 Enter 用預設值即可；正式網址用 `vercel --prod`。
