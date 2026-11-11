@@ -13,7 +13,7 @@ app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
 
 ## 目前能用的功能 / What works now
 
-- 四個畫面：設定 → 面試進行中／課堂報告 → 回饋報告（網址 `#setup`、`#interview`、`#present`、`#report`）
+- 五個畫面：首頁簡介 → 設定 → 面試進行中／課堂報告 → 回饋報告（網址 `#intro`、`#setup`、`#interview`、`#present`、`#report`）
 - 右上角中文／English 切換，會記住選擇
 - 「開啟鏡頭」顯示真的鏡頭畫面（只在瀏覽器裡，不上傳）
 - 「聽 1 分鐘放鬆音樂」目前只有畫面和倒數，沒有聲音；之後接上組員測試的音樂 API

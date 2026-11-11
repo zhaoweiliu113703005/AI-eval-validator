@@ -6,6 +6,16 @@
   const I18N = {
     zh: {
       brand: "AI 臨場教練",
+      introTitle: "AI 模擬面試與課堂報告教練",
+      introBody: "上場之前，先在這裡練一次。AI 扮演面試官或台下聽眾，依你的履歷或簡報提問；同時在瀏覽器裡分析你的表情、眼神、心率與聲音，結束後給你一份逐題回饋報告。中文、英文都能練。",
+      introStart: "開始練習", introSample: "看範例報告",
+      introAlt: "示意圖：電腦上的模擬面試畫面，以及手機上的回饋報告",
+      introFeat: [
+        ["模擬面試", "AI 面試官依你的履歷出題，回答太空泛會追問，每題最多 2 次。"],
+        ["課堂報告", "完整講完你的報告，AI 全程不打斷，結束後依內容提出 2–3 個問題。"],
+        ["即時分析", "表情、眼神、心率與語速，和你暖身時的狀態比較，找出哪一題最緊張。"],
+        ["放鬆一下", "偵測到你很緊張時，可以選擇先聽一分鐘放鬆音樂，再繼續練習。"]
+      ],
       title: "上場之前，先在這裡練一次。",
       lede: "AI 扮演面試官或台下聽眾，同時分析你的表情、眼神、聲音與心率，結束後給你一份具體的回饋報告。",
       step1: "1　選擇練習模式", interview: "模擬面試", interviewDesc: "AI 面試官依你的履歷出題，回答不夠具體會追問。",
@@ -59,6 +69,16 @@
     },
     en: {
       brand: "AI Practice Coach",
+      introTitle: "AI coach for mock interviews and class presentations",
+      introBody: "Practice here before the real thing. The AI plays your interviewer or your audience and asks questions based on your resume or slides. Meanwhile, your browser analyzes your expressions, eye contact, heart rate, and voice. At the end you get question-by-question feedback. Practice in Chinese or English.",
+      introStart: "Start practicing", introSample: "See a sample report",
+      introAlt: "Illustration: a mock interview screen on a computer and a feedback report on a phone",
+      introFeat: [
+        ["Mock interview", "An AI interviewer asks about your resume and follows up on vague answers, up to 2 times per question."],
+        ["Class presentation", "Give your full talk without interruption. The AI then asks 2–3 questions about your content."],
+        ["Live analysis", "Expression, eye contact, heart rate, and pace, compared with your warm-up to find where you got nervous."],
+        ["Take a breath", "When you seem very nervous, you can choose a one-minute music break before you continue."]
+      ],
       title: "Practice here before the real thing.",
       lede: "AI plays your interviewer or your audience while analyzing your expressions, eye contact, voice, and heart rate. You get a specific feedback report at the end.",
       step1: "1　Choose a mode", interview: "Mock interview", interviewDesc: "An AI interviewer asks questions based on your resume and follows up on vague answers.",
@@ -132,7 +152,7 @@
   function saveLang(v) { try { localStorage.setItem("coach-lang", v); } catch (e) { /* ignore */ } }
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const route = () => (location.hash.replace("#", "") || "setup");
+  const route = () => (location.hash.replace("#", "") || "intro");
   const fmt = (s) => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
 
   // ---------- shared pieces ----------
@@ -159,6 +179,74 @@
   }
 
   // ---------- views ----------
+  // Landing illustration: interview screen on a monitor + feedback report on a phone.
+  // Colors come from CSS classes (.ia-*) so it follows light/dark mode.
+  const introArt = () => `
+    <svg viewBox="0 0 560 400" role="img" aria-label="${esc(t.introAlt)}">
+      <circle class="ia-blob" cx="250" cy="190" r="175"/>
+      <path class="ia-stand" d="M222 310h56l14 48h-84z"/>
+      <rect class="ia-stand" x="168" y="356" width="164" height="10" rx="5"/>
+      <rect class="ia-body" x="20" y="20" width="460" height="292" rx="18"/>
+      <rect class="ia-screen" x="36" y="36" width="428" height="256" rx="8"/>
+      <rect class="ia-cam" x="52" y="52" width="262" height="160" rx="8"/>
+      <ellipse cx="183" cy="128" rx="34" ry="44" fill="none" stroke="#5E7A94" stroke-width="2" stroke-dasharray="4 6"/>
+      <circle cx="170" cy="120" r="3" fill="#9CC3E0"/><circle cx="196" cy="120" r="3" fill="#9CC3E0"/>
+      <path d="M174 148c6 5 12 5 18 0" fill="none" stroke="#5E7A94" stroke-width="2" stroke-linecap="round"/>
+      <rect x="62" y="62" width="74" height="14" rx="7" fill="rgba(255,255,255,.18)"/>
+      <circle cx="296" cy="196" r="5" fill="#FF6B5E"/>
+      <rect class="ia-card" x="52" y="222" width="262" height="54" rx="8"/>
+      <circle class="ia-avatar" cx="72" cy="240" r="9"/>
+      <rect class="ia-ink" x="88" y="234" width="150" height="7" rx="3.5"/>
+      <rect class="ia-line" x="88" y="250" width="200" height="6" rx="3"/>
+      <rect class="ia-line" x="88" y="262" width="120" height="6" rx="3"/>
+      <rect class="ia-warn" x="326" y="52" width="122" height="64" rx="8"/>
+      <rect class="ia-warn-ink" x="338" y="64" width="70" height="7" rx="3.5"/>
+      <rect class="ia-line" x="338" y="80" width="98" height="5" rx="2.5"/>
+      <rect class="ia-warn-bar" x="338" y="96" width="56" height="12" rx="4"/>
+      <rect class="ia-card" x="326" y="126" width="122" height="150" rx="8"/>
+      <rect class="ia-tile" x="336" y="136" width="48" height="32" rx="5"/>
+      <rect class="ia-tile" x="390" y="136" width="48" height="32" rx="5"/>
+      <rect class="ia-tile" x="336" y="176" width="48" height="32" rx="5"/>
+      <rect class="ia-tile" x="390" y="176" width="48" height="32" rx="5"/>
+      <rect class="ia-track" x="336" y="222" width="102" height="8" rx="4"/>
+      <rect class="ia-warn-bar" x="336" y="222" width="78" height="8" rx="4"/>
+      <rect class="ia-line" x="336" y="242" width="80" height="5" rx="2.5"/>
+      <rect class="ia-line" x="336" y="254" width="60" height="5" rx="2.5"/>
+      <rect class="ia-body" x="420" y="150" width="136" height="236" rx="20"/>
+      <rect class="ia-screen" x="430" y="170" width="116" height="200" rx="10"/>
+      <rect class="ia-ink" x="468" y="158" width="40" height="4" rx="2"/>
+      <circle class="ia-ring-bg" cx="488" cy="214" r="26"/>
+      <circle class="ia-ring" cx="488" cy="214" r="26" stroke-dasharray="121 164" transform="rotate(-90 488 214)"/>
+      <text class="ia-score" x="488" y="220" text-anchor="middle">7.4</text>
+      <rect class="ia-ink" x="440" y="252" width="96" height="6" rx="3"/>
+      <rect class="ia-line" x="440" y="264" width="70" height="6" rx="3"/>
+      <polyline class="ia-chart" points="440,302 456,296 472,290 488,274 504,288 520,292 536,290"/>
+      <rect class="ia-card" x="440" y="316" width="44" height="26" rx="5"/>
+      <rect class="ia-card" x="492" y="316" width="44" height="26" rx="5"/>
+      <rect class="ia-avatar" x="440" y="350" width="96" height="8" rx="4"/>
+    </svg>`;
+
+  function viewIntro() {
+    return `
+    <div class="wrap">
+      <section class="intro">
+        <div class="intro-art">${introArt()}</div>
+        <div class="intro-text">
+          <h1>${esc(t.introTitle)}</h1>
+          <p>${esc(t.introBody)}</p>
+          <div class="intro-acts">
+            <a class="btn" href="#report">${esc(t.introSample)}</a>
+            <a class="btn dark" href="#setup">${esc(t.introStart)}</a>
+          </div>
+        </div>
+      </section>
+      <div class="grid4 intro-feats">
+        ${t.introFeat.map((f) => `<div class="card"><b>${esc(f[0])}</b><p class="note">${esc(f[1])}</p></div>`).join("")}
+      </div>
+      <p class="demo-flag">${esc(t.demo)}</p>
+    </div>`;
+  }
+
   function viewSetup() {
     const isI = state.mode === "interview";
     return `
@@ -379,8 +467,8 @@
   // ---------- render ----------
   function render() {
     const r = route();
-    const views = { setup: viewSetup, interview: viewInterview, present: viewPresent, report: viewReport };
-    const view = views[r] || viewSetup;
+    const views = { intro: viewIntro, setup: viewSetup, interview: viewInterview, present: viewPresent, report: viewReport };
+    const view = views[r] || viewIntro;
     document.documentElement.lang = state.lang === "en" ? "en" : "zh-Hant";
     renderTopbar(r);
     $("app").innerHTML = view();
