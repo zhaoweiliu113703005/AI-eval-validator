@@ -53,8 +53,15 @@
       total: "總分", delta: "比上次 +0.8",
       summary: "內容有具體經驗，結構清楚；主要可以加強的是講出結果與數字，以及第 3 題開始的緊張感。",
       stats: [["眼神接觸", "71%", "目標 70% 以上"], ["平均語速", "偏快", "每分鐘 248 字"], ["贅字", "14 次", "「然後」最多"], ["平均心率", "89", "bpm・暖身 78"]],
-      curveTitle: "緊張程度與心率變化", lgTension: "綜合緊張程度", lgHr: "心率", musicMark: "放鬆音樂 1 分鐘",
-      curveAlt: "緊張程度與心率的折線圖，第 3 題達到高峰，聽完放鬆音樂後下降",
+      scoreAria: "總分 7.4 分（滿分 10 分），比上次進步 0.8 分", statOk: "達標", statWarn: "留意",
+      curveTitle: "緊張程度與心率變化",
+      chartHint: "滑過圖表，或點一下圖表後用鍵盤左右鍵，可以看每個時間點的數值。",
+      chartTension: "綜合緊張程度", chartTensionSub: "0–100・綜合表情、心率與聲音，和暖身時比較",
+      chartHr: "心率", chartHrSub: "bpm・虛線是暖身時的心率",
+      peak: "最高", warmup: "暖身", musicShort: "音樂",
+      tensionAlt: "緊張程度折線圖：第 3 題升到最高 88，聽完放鬆音樂後降到 44",
+      hrAlt: "心率折線圖：第 3 題升到最高 98 bpm，聽完放鬆音樂後回到 86 bpm",
+      tableShow: "查看資料表", tblTime: "時間", tblPhase: "階段",
       curveNote: "第 3 題（行為題）被追問時緊張程度最高，心率升到 98 bpm；聽完一分鐘放鬆音樂後，心率回到 86 bpm，後面兩題維持穩定。",
       perQ: "逐題回饋", good: "做得好的地方", fix: "可以改進", youSaid: "你說的原句", better: "改進版本參考",
       fillNote: "〔請填入〕的部分請換成你自己的真實經驗，系統不會替你編造數字。",
@@ -116,8 +123,15 @@
       total: "Overall", delta: "+0.8 vs. last time",
       summary: "Your answers include concrete experiences and clear structure. Focus on stating results with numbers, and on the nervousness that starts at question 3.",
       stats: [["Eye contact", "71%", "Target 70%+"], ["Avg. pace", "Fast", "158 words per min"], ["Fillers", "14", "“like” most often"], ["Avg. heart rate", "89", "bpm · warm-up 78"]],
-      curveTitle: "Nervousness and heart rate", lgTension: "Overall nervousness", lgHr: "Heart rate", musicMark: "1 min music break",
-      curveAlt: "Line chart of nervousness and heart rate, peaking at question 3 and dropping after the music break",
+      scoreAria: "Overall score 7.4 out of 10, up 0.8 from last time", statOk: "On target", statWarn: "Watch",
+      curveTitle: "Nervousness and heart rate",
+      chartHint: "Hover over a chart, or click it and use the left/right arrow keys, to see each moment.",
+      chartTension: "Overall nervousness", chartTensionSub: "0–100 · expression, heart rate, and voice vs. warm-up",
+      chartHr: "Heart rate", chartHrSub: "bpm · dashed line is your warm-up rate",
+      peak: "Peak", warmup: "Warm-up", musicShort: "Music",
+      tensionAlt: "Line chart of nervousness: peaks at 88 on question 3, drops to 44 after the music break",
+      hrAlt: "Line chart of heart rate: peaks at 98 bpm on question 3, back to 86 bpm after the music break",
+      tableShow: "Show data table", tblTime: "Time", tblPhase: "Stage",
       curveNote: "Nervousness peaked during the follow-up on question 3 (behavioral), with heart rate at 98 bpm. After a one-minute music break it returned to 86 bpm and stayed steady.",
       perQ: "Question by question", good: "What went well", fix: "What to improve", youSaid: "What you said", better: "Suggested version",
       fillNote: "Replace the [Fill in] parts with your own real experience. The system never invents numbers for you.",
@@ -388,43 +402,186 @@
     </div>`;
   }
 
+  // ---------- report charts (sample data until the backend is connected) ----------
+  // One sample every 30 s. PHASE: 1–5 = question number, 0 = relax-music break.
+  const SERIES = {
+    stepSec: 30,
+    tension: [30, 34, 40, 46, 72, 88, 84, 60, 44, 46, 49, 52, 50],
+    hr: [80, 82, 85, 88, 95, 98, 97, 91, 86, 86, 87, 88, 87],
+    music: [6, 8],
+    segs: [[1, 0, 2], [2, 2, 4], [3, 4, 6], [0, 6, 8], [4, 8, 10], [5, 10, 12]]
+  };
+  const PHASE = [1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 5];
+  const phaseName = (p) => (p ? "Q" + p : t.musicShort);
+  // Two separate charts on purpose: never put two different units on one y-axis.
+  const CHARTS = [
+    { key: "tension", min: 0, max: 100, ticks: [0, 50, 100] },
+    { key: "hr", min: 70, max: 100, ticks: [70, 85, 100], baseline: 78 }
+  ];
+  // [icon, status] for each entry in t.stats; status 0 = on target, 1 = watch
+  const STAT_META = [["eye", 0], ["pace", 1], ["filler", 1], ["heart", 1]];
+  const ICONS = {
+    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    pace: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/>',
+    filler: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>',
+    heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    ok: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    warn: '<path d="M12 6v8M12 18.5h.01"/>'
+  };
+  const icon = (k, size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${size < 16 ? 3 : 1.8}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
+
+  // Ticked radial gauge: 270° arc, filled ticks go light -> dark in the accent hue (one hue, no rainbow).
+  function gaugeSvg(score) {
+    const N = 45, on = Math.round((score / 10) * N), c = 110;
+    let ticks = "";
+    for (let k = 0; k < N; k++) {
+      const a = ((135 + (k * 270) / (N - 1)) * Math.PI) / 180;
+      const p = (r) => `${(c + r * Math.cos(a)).toFixed(1)}`;
+      const q = (r) => `${(c + r * Math.sin(a)).toFixed(1)}`;
+      const mix = k < on ? ` style="stroke:color-mix(in oklab, var(--accent) ${Math.round(30 + (70 * k) / Math.max(1, on - 1))}%, var(--accent-ring))"` : "";
+      ticks += `<line class="${k < on ? "g-on" : "g-off"}" x1="${p(86)}" y1="${q(86)}" x2="${p(104)}" y2="${q(104)}"${mix}/>`;
+    }
+    return `<svg viewBox="0 0 220 220" aria-hidden="true">${ticks}</svg>`;
+  }
+
+  function statTile(s, meta) {
+    const warn = meta[1] === 1;
+    return `
+      <div class="stat">
+        <div class="stat-top">
+          <span class="stat-ic">${icon(meta[0], 20)}</span>
+          <span class="status ${warn ? "warn" : "ok"}">${icon(warn ? "warn" : "ok", 12)}${esc(warn ? t.statWarn : t.statOk)}</span>
+        </div>
+        <span class="stat-v">${esc(s[1])}</span>
+        <span class="stat-l">${esc(s[0])}</span>
+        <span class="muted" style="font-size:12px">${esc(s[2])}</span>
+      </div>`;
+  }
+
+  const chartCard = (key, title, sub) => `
+    <div class="ch-card">
+      <div><b>${esc(title)}</b><span class="muted" style="display:block">${esc(sub)}</span></div>
+      <div class="ch-box" data-chart="${key}"><div class="ch-plot"></div><div class="ch-tip" hidden></div></div>
+    </div>`;
+
+  // Charts are drawn after render at the container's real pixel width, so text never scales down.
+  let charts = [], cur = -1;
+  function drawReportCharts() {
+    charts = [];
+    document.querySelectorAll("[data-chart]").forEach((box) => {
+      const c = CHARTS.find((k) => k.key === box.dataset.chart);
+      if (c) charts.push(drawChart(box, c));
+    });
+  }
+
+  function drawChart(box, c) {
+    const plot = box.querySelector(".ch-plot"), tip = box.querySelector(".ch-tip");
+    const w = Math.max(260, Math.floor(plot.clientWidth)), h = 210, L = 34, R = 12, T = 28, B = 30;
+    const vals = SERIES[c.key], n = vals.length;
+    const x = (i) => L + (i * (w - L - R)) / (n - 1);
+    const y = (v) => T + (1 - (v - c.min) / (c.max - c.min)) * (h - T - B);
+    const pk = vals.indexOf(Math.max(...vals));
+    const line = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const [m0, m1] = SERIES.music;
+    plot.innerHTML = `
+      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" tabindex="0" role="img" aria-label="${esc(c.key === "hr" ? t.hrAlt : t.tensionAlt)}">
+        <rect class="ch-music" x="${x(m0)}" y="${T - 12}" width="${x(m1) - x(m0)}" height="${h - B - T + 12}" rx="6"/>
+        ${c.ticks.map((v) => `<line class="ch-gl" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ch-tick" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join("")}
+        ${c.baseline ? `<line class="ch-base" x1="${L}" x2="${w - R}" y1="${y(c.baseline)}" y2="${y(c.baseline)}"/><text class="ch-tick ch-halo" x="${w - R}" y="${y(c.baseline) - 6}" text-anchor="end">${esc(t.warmup)} ${c.baseline}</text>` : ""}
+        ${SERIES.segs.map(([p, a, b]) => `<text class="ch-tick" x="${(x(a) + x(b)) / 2}" y="${h - 8}" text-anchor="middle">${esc(phaseName(p))}</text>`).join("")}
+        <path class="ch-area" d="M${x(0)},${y(c.min)} L${line.replace(/ /g, " L")} L${x(n - 1)},${y(c.min)} Z"/>
+        <polyline class="ch-line" points="${line}"/>
+        <circle class="ch-dot" cx="${x(pk)}" cy="${y(vals[pk])}" r="4.5"/>
+        <text class="ch-label ch-halo" x="${x(pk)}" y="${y(vals[pk]) - 12}" text-anchor="middle">${esc(t.peak)} ${vals[pk]}</text>
+        <g class="ch-cross" style="display:none"><line y1="${T - 12}" y2="${h - B}"/><circle class="ch-dot" r="5"/></g>
+      </svg>`;
+    const svg = plot.querySelector("svg");
+    const ch = { svg, tip, x, y, c, w };
+    const clampI = (i) => Math.max(0, Math.min(n - 1, i));
+    svg.addEventListener("pointermove", (e) => {
+      const px = e.clientX - svg.getBoundingClientRect().left;
+      showAt(clampI(Math.round(((px - L) * (n - 1)) / (w - L - R))), ch);
+    });
+    svg.addEventListener("pointerleave", hideCross);
+    svg.addEventListener("focus", () => showAt(cur < 0 ? pk : cur, ch));
+    svg.addEventListener("blur", hideCross);
+    svg.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      showAt(clampI((cur < 0 ? pk : cur) + (e.key === "ArrowRight" ? 1 : -1)), ch);
+    });
+    return ch;
+  }
+
+  // Crosshair moves in both charts together; one tooltip (in the hovered chart) lists both values.
+  function showAt(i, owner) {
+    cur = i;
+    charts.forEach((ch) => {
+      const g = ch.svg.querySelector(".ch-cross"), cx = ch.x(i);
+      g.style.display = "";
+      const l = g.querySelector("line");
+      l.setAttribute("x1", cx); l.setAttribute("x2", cx);
+      const d = g.querySelector("circle");
+      d.setAttribute("cx", cx); d.setAttribute("cy", ch.y(SERIES[ch.c.key][i]));
+      ch.tip.hidden = ch !== owner;
+    });
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const row = (val, name) => { const r = el("div", "ch-tip-r"); r.append(el("i"), el("b", null, val), el("span", null, name)); return r; };
+    const tip = owner.tip;
+    tip.replaceChildren(
+      el("div", "ch-tip-h", `${phaseName(PHASE[i])} · ${fmt(i * SERIES.stepSec)}`),
+      row(String(SERIES.tension[i]), t.chartTension),
+      row(SERIES.hr[i] + " bpm", t.chartHr)
+    );
+    let left = owner.x(i) + 14;
+    if (left + tip.offsetWidth > owner.w) left = owner.x(i) - 14 - tip.offsetWidth;
+    tip.style.left = Math.max(0, left) + "px";
+  }
+  function hideCross() {
+    charts.forEach((ch) => { ch.svg.querySelector(".ch-cross").style.display = "none"; ch.tip.hidden = true; });
+  }
+
   function viewReport() {
     const q = t.qs[state.sel];
+    const rows = SERIES.tension.map((v, i) => `<tr><td>${fmt(i * SERIES.stepSec)}</td><td>${esc(phaseName(PHASE[i]))}</td><td>${v}</td><td>${SERIES.hr[i]}</td></tr>`).join("");
     return `
-    <div class="wrap stack" style="gap:24px">
-      <section class="card verdict" style="padding:28px">
-        <div class="score"><div><span class="n">7.4</span><span class="of">/10</span></div><span class="muted" style="font-size:14px">${esc(t.total)}</span><span class="delta">${esc(t.delta)}</span></div>
-        <div class="stack" style="flex:1 1 420px;min-width:0">
+    <div class="wrap stack report" style="gap:24px">
+      <section class="card verdict">
+        <div class="gauge" role="img" aria-label="${esc(t.scoreAria)}">
+          ${gaugeSvg(7.4)}
+          <div class="gauge-c" aria-hidden="true">
+            <div><span class="n">7.4</span><span class="of">/10</span></div>
+            <span class="muted">${esc(t.total)}</span>
+            <span class="delta">${esc(t.delta)}</span>
+          </div>
+        </div>
+        <div class="stack" style="flex:1 1 420px;min-width:0;gap:18px">
           <p class="summary">${esc(t.summary)}</p>
-          <div class="grid4">${t.stats.map((s) => `<div class="metric"><span class="muted">${esc(s[0])}</span><span class="v">${esc(s[1])}</span><span class="muted" style="font-size:12px">${esc(s[2])}</span></div>`).join("")}</div>
+          <div class="grid4">${t.stats.map((s, i) => statTile(s, STAT_META[i])).join("")}</div>
         </div>
       </section>
 
-      <section class="card stack" style="padding:24px 28px">
-        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:baseline">
-          <h2 style="font-size:18px">${esc(t.curveTitle)}</h2>
-          <div class="legend"><span><i style="height:3px;background:var(--warn-bar)"></i>${esc(t.lgTension)}</span><span><i style="border-top:3px dashed var(--accent)"></i>${esc(t.lgHr)}</span></div>
-        </div>
-        <div class="chart-box">
-          <svg viewBox="0 0 1060 240" role="img" aria-label="${esc(t.curveAlt)}">
-            <line x1="40" y1="200" x2="1040" y2="200" stroke="var(--line)"/>
-            <line x1="40" y1="120" x2="1040" y2="120" stroke="var(--line-soft)"/>
-            <line x1="40" y1="40" x2="1040" y2="40" stroke="var(--line-soft)"/>
-            <rect x="560" y="30" width="110" height="170" fill="var(--accent-soft)"/>
-            <text x="615" y="24" text-anchor="middle" font-size="13" fill="var(--accent)">${esc(t.musicMark)}</text>
-            <polyline points="40,160 140,150 240,138 340,120 440,70 520,52 560,58 620,112 670,140 760,132 860,128 960,118 1040,124" fill="none" stroke="var(--warn-bar)" stroke-width="3" stroke-linejoin="round"/>
-            <polyline points="40,150 140,146 240,136 340,124 440,92 520,78 560,80 620,108 670,128 760,128 860,124 960,120 1040,122" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="7 6" stroke-linejoin="round"/>
-            ${["Q1", "Q2", "Q3", "Q4", "Q5"].map((l, i) => `<text x="${[90, 290, 480, 760, 960][i]}" y="222" text-anchor="middle" font-size="13" fill="var(--ink-3)">${l}</text>`).join("")}
-          </svg>
+      <section class="card stack" style="gap:18px">
+        <div class="stack" style="gap:4px"><h2 style="font-size:18px">${esc(t.curveTitle)}</h2><p class="note">${esc(t.chartHint)}</p></div>
+        <div class="ch-pair">
+          ${chartCard("tension", t.chartTension, t.chartTensionSub)}
+          ${chartCard("hr", t.chartHr, t.chartHrSub)}
         </div>
         <p class="note" style="font-size:14px;color:var(--ink-2)">${esc(t.curveNote)}</p>
+        <details class="tbl">
+          <summary>${esc(t.tableShow)}</summary>
+          <div class="tbl-scroll"><table>
+            <thead><tr><th>${esc(t.tblTime)}</th><th>${esc(t.tblPhase)}</th><th>${esc(t.chartTension)}</th><th>${esc(t.chartHr)} (bpm)</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table></div>
+        </details>
       </section>
 
       <section class="stack" style="gap:12px">
         <h2 style="font-size:18px">${esc(t.perQ)}</h2>
         <div class="row" style="gap:20px">
           <div class="stack" style="flex:1 1 300px;min-width:0;gap:8px">
-            ${t.qs.map((x, i) => `<button type="button" class="qbtn ${i === state.sel ? "on" : ""}" data-action="sel" data-value="${i}" aria-pressed="${i === state.sel}"><span><span class="muted" style="display:block">${esc(x[0])}</span><span style="font-weight:600">${esc(x[1])}</span></span><b>${esc(x[2])}</b></button>`).join("")}
+            ${t.qs.map((x, i) => `<button type="button" class="qbtn ${i === state.sel ? "on" : ""}" data-action="sel" data-value="${i}" aria-pressed="${i === state.sel}"><span class="qbtn-l"><span class="muted" style="display:block">${esc(x[0])}</span><span style="font-weight:600">${esc(x[1])}</span><span class="qbar" aria-hidden="true"><i style="width:${Number(x[2]) * 10}%"></i></span></span><b>${esc(x[2])}</b></button>`).join("")}
           </div>
           <div class="card stack" style="flex:999 1 520px;min-width:0;padding:24px;gap:18px">
             <div><span class="muted">${esc(q[0])}</span><h3 style="font-size:18px;line-height:1.5">${esc(q[3])}</h3></div>
@@ -476,7 +633,14 @@
     if (v && state.camStream) v.srcObject = state.camStream;
     const f = $("slideFile");
     if (f) f.addEventListener("change", () => { if (f.files[0]) $("slideName").textContent = f.files[0].name; });
+    if (r === "report") drawReportCharts();
   }
+
+  let resizeId = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeId);
+    resizeId = setTimeout(() => { if (route() === "report") drawReportCharts(); }, 150);
+  });
 
   function onRouteChange() {
     const r = route();
