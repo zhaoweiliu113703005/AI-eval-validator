@@ -20,17 +20,28 @@
       lede: "AI 扮演面試官或台下聽眾，同時分析你的表情、眼神、聲音與心率，結束後給你一份具體的回饋報告。",
       step1: "1　選擇練習模式", interview: "模擬面試", interviewDesc: "AI 面試官依你的履歷出題，回答不夠具體會追問。",
       present: "課堂報告", presentDesc: "完整講完你的報告，AI 全程不打斷，結束後再提問。",
-      step2: "2　練習內容", job: "應徵職缺", jobs: ["投資銀行部暑期實習", "商業銀行儲備幹部實習", "金融科技新創 BD 實習", "投信研究部實習", "會計師事務所財務顧問實習"],
+      step2: "2　練習內容", track: "應徵領域", job: "應徵職缺", otherJob: "其他（依職缺說明出題）",
+      // Each track: [name, jobs]. Keep the same order and length in zh and en so the selection survives a language switch.
+      tracks: [
+        ["金融", ["投資銀行部暑期實習", "商業銀行儲備幹部實習", "投信研究部實習", "金融科技新創 BD 實習", "會計師事務所財務顧問實習"]],
+        ["企管／顧問／行銷", ["管理顧問實習", "行銷企劃實習", "儲備幹部（MA）", "產品經理實習"]],
+        ["軟體／資料", ["軟體工程實習", "資料分析實習", "機器學習工程實習", "前端工程實習"]],
+        ["人資／使用者研究", ["人力資源實習", "使用者研究實習", "市場調查研究員", "社會企業專案助理"]],
+        ["公共政策／國際組織", ["政策分析實習", "智庫研究助理", "國際組織實習", "公共事務實習"]],
+        ["國際商務", ["跨國企業業務實習", "國際行銷實習", "供應鏈管理實習", "海外市場拓展實習"]]
+      ],
+      jd: "職缺說明（選填）", jdPh: "貼上職缺的工作內容、條件要求與加分條件。",
+      jdHint: "貼了之後，AI 會挑出這個職缺最重視的能力來出題與評分；沒貼就依領域和職缺名稱出題。",
       resume: "你的履歷", resumePh: "貼上學歷、實習、社團、競賽經歷，面試官會從這裡挑題目深入追問。",
       course: "課程與報告主題", coursePh: "例：深度學習概論／期中專題報告", upload: "上傳簡報", uploadHint: "支援 .pptx、.pdf，AI 會依內容提問",
       qcount: "報告後提問數", speakLang: "練習語言", reportLang: "回饋報告語言",
       step3: "3　分析項目", relaxOpt: "偵測到我很緊張時，提示我可以聽一段放鬆音樂",
-      privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有逐字稿會送給 AI 評分。",
+      privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有文字（履歷、職缺說明、逐字稿）會送給 AI 出題與評分。",
       startI: "開始模擬面試", startP: "開始報告練習",
       sensors: [["表情辨識", "自訓練 CNN"], ["眼神接觸", "MediaPipe 臉部偵測"], ["心率偵測", "rPPG，只用鏡頭"], ["語音分析", "語速、贅字、緊張程度"]],
       on: "已開啟",
       end: "結束並看報告",
-      steps: ["自我介紹", "應徵動機", "行為題", "財金專業", "履歷深入"],
+      steps: ["自我介紹", "應徵動機", "行為題", "專業知識", "履歷深入"],
       local: "影像只在本機分析", hrTag: "額頭區域：心率偵測", recording: "作答中", camOn: "開啟鏡頭", camOff: "關閉鏡頭", camFail: "無法開啟鏡頭，請檢查瀏覽器權限。",
       followTag: "第 3 題・追問", question: "你提到期限很趕，最後的結果是什麼？你怎麼知道這個做法有效？",
       liveTx: "即時逐字稿", answer: "那時候離交件只剩兩天，我先把工作拆成三塊，然後……",
@@ -90,17 +101,27 @@
       lede: "AI plays your interviewer or your audience while analyzing your expressions, eye contact, voice, and heart rate. You get a specific feedback report at the end.",
       step1: "1　Choose a mode", interview: "Mock interview", interviewDesc: "An AI interviewer asks questions based on your resume and follows up on vague answers.",
       present: "Class presentation", presentDesc: "Give your full presentation without interruption. The AI asks questions afterward.",
-      step2: "2　Practice details", job: "Position", jobs: ["Investment Banking Summer Intern", "Commercial Bank Management Associate", "Fintech Startup BD Intern", "Asset Management Research Intern", "Financial Advisory (Big Four) Intern"],
+      step2: "2　Practice details", track: "Field", job: "Position", otherJob: "Other (questions based on the job description)",
+      tracks: [
+        ["Finance", ["Investment Banking Summer Intern", "Commercial Bank Management Associate", "Asset Management Research Intern", "Fintech Startup BD Intern", "Financial Advisory (Big Four) Intern"]],
+        ["Business / Consulting / Marketing", ["Management Consulting Intern", "Marketing Planning Intern", "Management Associate (MA)", "Product Manager Intern"]],
+        ["Software / Data", ["Software Engineering Intern", "Data Analyst Intern", "Machine Learning Engineering Intern", "Front-end Engineering Intern"]],
+        ["HR / User Research", ["Human Resources Intern", "User Research Intern", "Market Research Analyst", "Social Enterprise Project Assistant"]],
+        ["Public Policy / International Organizations", ["Policy Analyst Intern", "Think Tank Research Assistant", "International Organization Intern", "Public Affairs Intern"]],
+        ["International Business", ["International Sales Intern", "Global Marketing Intern", "Supply Chain Management Intern", "Overseas Market Development Intern"]]
+      ],
+      jd: "Job description (optional)", jdPh: "Paste the responsibilities, requirements, and nice-to-haves from the job posting.",
+      jdHint: "If you paste it, the AI focuses its questions and scoring on what this job values most. Otherwise it uses the field and position name.",
       resume: "Your resume", resumePh: "Paste your education, internships, clubs, and competitions. The interviewer will pick from these.",
       course: "Course and topic", coursePh: "e.g. Intro to Deep Learning / Midterm project", upload: "Upload slides", uploadHint: ".pptx or .pdf; the AI asks questions based on them",
       qcount: "Questions after presentation", speakLang: "Practice language", reportLang: "Report language",
       step3: "3　Analysis", relaxOpt: "When I seem very nervous, offer me a short relaxing music break",
-      privacy: "Camera video is analyzed only in your browser and never uploaded. Only the transcript is sent to the AI for scoring.",
+      privacy: "Camera video is analyzed only in your browser and never uploaded. Only text (resume, job description, transcript) is sent to the AI for questions and scoring.",
       startI: "Start mock interview", startP: "Start presentation practice",
       sensors: [["Facial expression", "Self-trained CNN"], ["Eye contact", "MediaPipe face detection"], ["Heart rate", "rPPG, camera only"], ["Voice analysis", "Pace, fillers, nervousness"]],
       on: "On",
       end: "End and see report",
-      steps: ["Intro", "Motivation", "Behavioral", "Finance", "Resume"],
+      steps: ["Intro", "Motivation", "Behavioral", "Technical", "Resume"],
       local: "Video analyzed on this device only", hrTag: "Forehead: heart rate", recording: "Answering", camOn: "Turn on camera", camOff: "Turn off camera", camFail: "Couldn’t open the camera. Check your browser permissions.",
       followTag: "Question 3 · Follow-up", question: "You mentioned a tight deadline. What was the final outcome, and how do you know it worked?",
       liveTx: "Live transcript", answer: "We only had two days left, so I first split the work into three parts, and then…",
@@ -153,6 +174,9 @@
     panel: "alert",       // alert | music | none
     phase: "talk",        // talk | qa
     sel: 2,
+    // Setup form values, kept here so re-rendering (mode / language switch) doesn't wipe what the user typed.
+    // These are what the backend /api/start call will need.
+    form: { track: 0, job: 0, jd: "", resume: "" },
     camStream: null,
     camError: false
   };
@@ -261,8 +285,15 @@
     </div>`;
   }
 
+  function jobOptions() {
+    const f = state.form;
+    return t.tracks[f.track][1].concat(t.otherJob)
+      .map((j, i) => `<option value="${i}"${i === f.job ? " selected" : ""}>${esc(j)}</option>`).join("");
+  }
+
   function viewSetup() {
     const isI = state.mode === "interview";
+    const f = state.form;
     return `
     <div class="wrap">
       <div class="hero"><h1>${esc(t.title)}</h1><p>${esc(t.lede)}</p></div>
@@ -285,8 +316,12 @@
             <h2 class="sec-title">${esc(t.step2)}</h2>
             <div class="card stack">
               ${isI ? `
-                <label class="field">${esc(t.job)}<select>${t.jobs.map((j) => `<option>${esc(j)}</option>`).join("")}</select></label>
-                <label class="field">${esc(t.resume)}<textarea rows="4" placeholder="${esc(t.resumePh)}"></textarea></label>
+                <div class="grid2">
+                  <label class="field">${esc(t.track)}<select data-field="track">${t.tracks.map((tr, i) => `<option value="${i}"${i === f.track ? " selected" : ""}>${esc(tr[0])}</option>`).join("")}</select></label>
+                  <label class="field">${esc(t.job)}<select data-field="job" id="jobSel">${jobOptions()}</select></label>
+                </div>
+                <label class="field">${esc(t.jd)}<textarea data-field="jd" rows="5" maxlength="6000" placeholder="${esc(t.jdPh)}">${esc(f.jd)}</textarea><span class="note" style="font-weight:400">${esc(t.jdHint)}</span></label>
+                <label class="field">${esc(t.resume)}<textarea data-field="resume" rows="4" placeholder="${esc(t.resumePh)}">${esc(f.resume)}</textarea></label>
               ` : `
                 <label class="field">${esc(t.course)}<input placeholder="${esc(t.coursePh)}"></label>
                 <div class="drop">
@@ -721,6 +756,19 @@
     else if (a === "toTalk") { state.phase = "talk"; render(); }
     else if (a === "sel") { state.sel = Number(el.dataset.value); render(); }
     else if (a === "speak") speak();
+  });
+
+  // Setup form: remember values; changing the field swaps the position list in place (no re-render).
+  document.addEventListener("input", (e) => {
+    const k = e.target.dataset && e.target.dataset.field;
+    if (!k) return;
+    if (k === "track") {
+      state.form.track = Number(e.target.value);
+      state.form.job = 0;
+      const js = $("jobSel");
+      if (js) js.innerHTML = jobOptions();
+    } else if (k === "job") state.form.job = Number(e.target.value);
+    else state.form[k] = e.target.value;
   });
 
   window.addEventListener("hashchange", onRouteChange);
