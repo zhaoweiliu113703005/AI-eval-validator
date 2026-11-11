@@ -34,7 +34,7 @@
       jdHint: "貼了之後，AI 會挑出這個職缺最重視的能力來出題與評分；沒貼就依領域和職缺名稱出題。",
       resume: "你的履歷", resumePh: "貼上學歷、實習、社團、競賽經歷，面試官會從這裡挑題目深入追問。",
       course: "課程與報告主題", coursePh: "例：深度學習概論／期中專題報告", upload: "上傳簡報", uploadHint: "支援 .pptx、.pdf，AI 會依內容提問",
-      qcount: "報告後提問數", speakLang: "練習語言", reportLang: "回饋報告語言",
+      qcount: "報告後提問數", speakLang: "練習語言", speakLangHint: "回饋報告也會使用這個語言。",
       step3: "3　分析項目", relaxOpt: "偵測到我很緊張時，提示我可以聽一段放鬆音樂",
       privacy: "鏡頭畫面只在你的瀏覽器裡分析，不會上傳；只有文字（履歷、職缺說明、逐字稿）會送給 AI 出題與評分。",
       startI: "開始模擬面試", startP: "開始報告練習",
@@ -114,7 +114,7 @@
       jdHint: "If you paste it, the AI focuses its questions and scoring on what this job values most. Otherwise it uses the field and position name.",
       resume: "Your resume", resumePh: "Paste your education, internships, clubs, and competitions. The interviewer will pick from these.",
       course: "Course and topic", coursePh: "e.g. Intro to Deep Learning / Midterm project", upload: "Upload slides", uploadHint: ".pptx or .pdf; the AI asks questions based on them",
-      qcount: "Questions after presentation", speakLang: "Practice language", reportLang: "Report language",
+      qcount: "Questions after presentation", speakLang: "Practice language", speakLangHint: "Your feedback report will be in this language too.",
       step3: "3　Analysis", relaxOpt: "When I seem very nervous, offer me a short relaxing music break",
       privacy: "Camera video is analyzed only in your browser and never uploaded. Only text (resume, job description, transcript) is sent to the AI for questions and scoring.",
       startI: "Start mock interview", startP: "Start presentation practice",
@@ -176,7 +176,7 @@
     sel: 2,
     // Setup form values, kept here so re-rendering (mode / language switch) doesn't wipe what the user typed.
     // These are what the backend /api/start call will need.
-    form: { track: 0, job: 0, jd: "", resume: "" },
+    form: { track: 0, job: 0, jd: "", resume: "", speakLang: "" },  // speakLang "" = follow UI language; report uses the same language
     camStream: null,
     camError: false
   };
@@ -332,8 +332,7 @@
                 <label class="field">${esc(t.qcount)}<select><option>2</option><option selected>3</option><option>4</option></select></label>
               `}
               <div class="grid2">
-                <label class="field">${esc(t.speakLang)}<select><option>中文</option><option>English</option></select></label>
-                <label class="field">${esc(t.reportLang)}<select><option>中文</option><option>English</option></select></label>
+                <label class="field">${esc(t.speakLang)}<select data-field="speakLang">${[["zh", "中文"], ["en", "English"]].map(([v, n]) => `<option value="${v}"${v === (f.speakLang || state.lang) ? " selected" : ""}>${n}</option>`).join("")}</select><span class="note" style="font-weight:400">${esc(t.speakLangHint)}</span></label>
               </div>
             </div>
           </div>
