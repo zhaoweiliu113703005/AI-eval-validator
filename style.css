@@ -217,6 +217,26 @@ h1, h2, h3 { margin: 0; }
 .cam .cam-btn { position: absolute; left: 14px; bottom: 14px; }
 .cam .cam-btn .btn { background: rgba(255,255,255,.92); color: #1C2230; border: 0; }
 
+/* interview call: AI interviewer tile + your camera tile, side by side */
+.call { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.call .cam { height: auto; aspect-ratio: 4 / 3; }
+.call .cam .overlay svg { height: 62%; width: auto; }
+@media (max-width: 720px) { .call { grid-template-columns: 1fr; } }
+
+.iv-ph { width: 96px; height: 96px; border-radius: 50%; background: rgba(255,255,255,.1); color: #9CC3E0; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; }
+.cam .iv-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: none; }
+.iv-media.missing { display: none; }
+.iv .tag, .iv .rec { background: rgba(14,17,22,.55); color: #fff; backdrop-filter: blur(6px); }
+.iv-talk { opacity: 0; transition: opacity .25s ease; }
+.iv.talking .iv-talk { opacity: 1; }
+.iv-dot { width: 9px; height: 9px; border-radius: 50%; background: #9CC3E0; flex: none; }
+.iv.talking .iv-dot { background: #7FD49B; animation: iv-pulse 1s ease-in-out infinite; }
+@keyframes iv-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) {
+  .iv video { display: none; }
+  .iv.talking .iv-dot { animation: none; }
+}
+
 /* conversation */
 .ask { display: flex; gap: 12px; align-items: flex-start; }
 .avatar { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-ring); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }

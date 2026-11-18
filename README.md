@@ -9,7 +9,22 @@ Front-end only. **No AI model is connected yet**; all analysis results are sampl
 index.html   頁面骨架 / page shell
 style.css    樣式（自動支援深色模式）/ styles (with dark mode)
 app.js       畫面切換、中英文、鏡頭 / routing, i18n, camera
+tools/gen_interviewer.py   產生 AI 面試官影像（開發用，不是網站的一部分）/ generates the interviewer media (dev tool)
+assets/interviewer/        產生出來的面試官照片與影片 / generated interviewer image and video loops
 ```
+
+## AI 面試官影像 / AI interviewer video
+
+面試畫面左邊是 AI 面試官：平常播「聆聽」影片，朗讀題目時切換成「說話」影片。影片是事先用 Agnes AI 產生好的檔案，網站執行時**不會**呼叫任何 API。還沒產生檔案時，畫面會顯示一個「AI」佔位圖。
+The interview screen shows an AI interviewer: an "idle" loop while listening and a "talk" loop while the question is read aloud. The videos are generated once with Agnes AI and served as static files; the site makes **no** API call at runtime. Without the files, a plain "AI" placeholder is shown.
+
+Generate them (Python 3, no extra packages; the key stays in an environment variable and is never saved):
+```
+$env:AGNES_API_KEY = "your key"
+python tools/gen_interviewer.py image   # portrait; re-run until you like it
+python tools/gen_interviewer.py video   # idle.mp4 + talk.mp4 from that portrait
+```
+To change the interviewer's look or movement, edit `PORTRAIT_PROMPT` and `CLIPS` in the script.
 
 ## 目前能用的功能 / What works now
 

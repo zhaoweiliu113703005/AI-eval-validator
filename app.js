@@ -45,6 +45,7 @@
       on: "已開啟",
       end: "結束並看報告",
       steps: ["自我介紹", "應徵動機", "行為題", "專業知識", "履歷深入"],
+      ivName: "AI 面試官", ivListen: "聆聽中", ivSpeak: "說話中",
       local: "影像只在本機分析", hrTag: "額頭區域：心率偵測", recording: "作答中", camOn: "開啟鏡頭", camOff: "關閉鏡頭", camFail: "無法開啟鏡頭，請檢查瀏覽器權限。",
       followTag: "第 3 題・追問", question: "你提到期限很趕，最後的結果是什麼？你怎麼知道這個做法有效？",
       liveTx: "即時逐字稿", answer: "那時候離交件只剩兩天，我先把工作拆成三塊，然後……",
@@ -130,6 +131,7 @@
       on: "On",
       end: "End and see report",
       steps: ["Intro", "Motivation", "Behavioral", "Technical", "Resume"],
+      ivName: "AI interviewer", ivListen: "Listening", ivSpeak: "Speaking",
       local: "Video analyzed on this device only", hrTag: "Forehead: heart rate", recording: "Answering", camOn: "Turn on camera", camOff: "Turn off camera", camFail: "Couldn’t open the camera. Check your browser permissions.",
       followTag: "Question 3 · Follow-up", question: "You mentioned a tight deadline. What was the final outcome, and how do you know it worked?",
       liveTx: "Live transcript", answer: "We only had two days left, so I first split the work into three parts, and then…",
@@ -227,6 +229,40 @@
       </div>
       ${state.camError ? `<p class="note" role="alert">${esc(t.camFail)}</p>` : ""}`;
   }
+
+  // ---------- AI interviewer ----------
+  // Pre-generated files in assets/interviewer (made with tools/gen_interviewer.py, no API call at runtime).
+  // Two muted loops are stacked: "idle" while listening, "talk" while the question is read aloud.
+  // Both loops start and end on the portrait frame, so switching between them looks smooth.
+  // Any file that is missing is hidden, and the tile falls back to the portrait or a plain placeholder.
+  const IV = "assets/interviewer/";
+  let ivTalking = false;
+  function interviewerBlock() {
+    return `
+      <div class="cam iv ${ivTalking ? "talking" : ""}" id="iv">
+        <div class="iv-ph" aria-hidden="true">AI</div>
+        <img class="iv-media" src="${IV}portrait.png" alt="">
+        <video class="iv-media iv-idle" src="${IV}idle.mp4" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+        <video class="iv-media iv-talk" src="${IV}talk.mp4" muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <div class="tags"><span class="tag">${esc(t.ivName)}</span></div>
+        <div class="rec"><span class="iv-dot"></span><span id="ivState">${esc(ivTalking ? t.ivSpeak : t.ivListen)}</span></div>
+      </div>`;
+  }
+  function setTalking(on) {
+    ivTalking = on;
+    const box = $("iv");
+    if (!box) return;
+    box.classList.toggle("talking", on);
+    $("ivState").textContent = on ? t.ivSpeak : t.ivListen;
+    const v = box.querySelector(".iv-talk");
+    if (!v) return;
+    if (on) { v.currentTime = 0; v.play().catch(() => {}); }
+    else v.pause();
+  }
+  // error events don't bubble, so listen in the capture phase
+  document.addEventListener("error", (e) => {
+    if (e.target.classList && e.target.classList.contains("iv-media")) e.target.classList.add("missing");
+  }, true);
 
   // ---------- views ----------
   // Landing illustration: interview screen on a monitor + feedback report on a phone.
@@ -454,7 +490,7 @@
       </div>
       <div class="row">
         <section class="col-main">
-          ${camBlock(false)}
+          <div class="call">${interviewerBlock()}<div>${camBlock(false)}</div></div>
           <div class="card stack">
             <div class="ask"><span class="avatar">AI</span><div><span class="muted">${esc(t.followTag)}</span><p>${esc(t.question)}</p></div></div>
             <div class="tx"><span class="muted" style="display:block">${esc(t.liveTx)}</span>${esc(t.answer)}</div>
@@ -811,12 +847,17 @@
     music = null;
   }
 
-  // ---------- read question aloud ----------
+  // ---------- read question aloud (the interviewer plays the "talk" loop meanwhile) ----------
+  let currentUtterance = null;
   function speak() {
     if (!window.speechSynthesis) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(t.question);
     u.lang = state.lang === "en" ? "en-US" : "zh-TW";
+    currentUtterance = u;
+    // cancel() fires "end" on the previous utterance late, so ignore events from old ones
+    u.onstart = () => { if (currentUtterance === u) setTalking(true); };
+    u.onend = u.onerror = () => { if (currentUtterance === u) setTalking(false); };
     speechSynthesis.speak(u);
   }
 
