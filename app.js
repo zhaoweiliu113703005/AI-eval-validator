@@ -6,18 +6,23 @@
   const I18N = {
     zh: {
       brand: "AI 臨場教練", home: "首頁",
-      introTitle: "AI 模擬面試與課堂報告教練",
-      introBody: "上場之前，先在這裡練一次。AI 扮演面試官或台下聽眾，依你的履歷或簡報提問；同時在瀏覽器裡分析你的表情、眼神、心率與聲音，結束後給你一份逐題回饋報告。中文、英文都能練。",
+      heroKicker: ["模擬面試", "課堂報告", "即時回饋"],
+      heroTitle: ["上場之前，", "先在這裡練一次。"],
+      introBody: "AI 扮演面試官或台下聽眾，依你的履歷或簡報提問；同時在瀏覽器裡分析表情、眼神、心率與聲音，結束後給你逐題回饋。",
       introStart: "開始練習", introSample: "看範例報告",
-      introAlt: "示意圖：電腦上的模擬面試畫面，以及手機上的回饋報告",
+      introAlt: "範例報告預覽：綜合分數 7.4，各項表現分數，以及作答過程的緊張程度曲線",
+      hcBars: "表現分析", hcBarsMeta: "5 項",
+      hcBarItems: [["眼神接觸", 72], ["回答結構", 81], ["語速穩定", 58], ["表情自然", 66], ["聲音清晰", 88]],
+      hcScore: "綜合分數", hcCurve: "緊張程度", hcCurveMeta: "5 題",
       introFeat: [
         ["模擬面試", "AI 面試官依你的履歷出題，回答太空泛會追問，每題最多 2 次。"],
         ["課堂報告", "完整講完你的報告，AI 全程不打斷，結束後依內容提出 2–3 個問題。"],
         ["即時分析", "表情、眼神、心率與語速，和你暖身時的狀態比較，找出哪一題最緊張。"],
-        ["放鬆一下", "偵測到你很緊張時，可以選擇一邊回答、一邊在背景播放放鬆音樂。"]
+        ["放鬆一下", "偵測到你很緊張時，可以選擇一邊回答、一邊在背景播放放鬆音樂。"],
+        ["中英文都能練", "面試官的提問、追問和回饋報告都支援中文與英文，選好練習語言就能開始。"]
       ],
-      title: "上場之前，先在這裡練一次。",
-      lede: "AI 扮演面試官或台下聽眾，同時分析你的表情、眼神、聲音與心率，結束後給你一份具體的回饋報告。",
+      title: "設定這次練習",
+      lede: "選擇模式、貼上職缺與履歷，就可以開始。",
       step1: "1　選擇練習模式", interview: "模擬面試", interviewDesc: "AI 面試官依你的履歷出題，回答不夠具體會追問。",
       present: "課堂報告", presentDesc: "完整講完你的報告，AI 全程不打斷，結束後再提問。",
       step2: "2　練習內容", track: "應徵領域", job: "應徵職缺", otherJob: "其他（依職缺說明出題）",
@@ -93,18 +98,23 @@
     },
     en: {
       brand: "AI Practice Coach", home: "Home",
-      introTitle: "AI coach for mock interviews and class presentations",
-      introBody: "Practice here before the real thing. The AI plays your interviewer or your audience and asks questions based on your resume or slides. Meanwhile, your browser analyzes your expressions, eye contact, heart rate, and voice. At the end you get question-by-question feedback. Practice in Chinese or English.",
+      heroKicker: ["Mock interviews", "Class presentations", "Live feedback"],
+      heroTitle: ["Rehearse it here,", "before the real thing."],
+      introBody: "AI plays your interviewer or your audience and asks about your resume or slides, while your browser reads your expressions, eye contact, heart rate, and voice. You get feedback on every question.",
       introStart: "Start practicing", introSample: "See a sample report",
-      introAlt: "Illustration: a mock interview screen on a computer and a feedback report on a phone",
+      introAlt: "Sample report preview: overall score 7.4, scores per skill, and a nervousness curve over the session",
+      hcBars: "Performance", hcBarsMeta: "5 skills",
+      hcBarItems: [["Eye contact", 72], ["Structure", 81], ["Steady pace", 58], ["Expression", 66], ["Clear voice", 88]],
+      hcScore: "Overall score", hcCurve: "Nervousness", hcCurveMeta: "5 questions",
       introFeat: [
         ["Mock interview", "An AI interviewer asks about your resume and follows up on vague answers, up to 2 times per question."],
         ["Class presentation", "Give your full talk without interruption. The AI then asks 2–3 questions about your content."],
         ["Live analysis", "Expression, eye contact, heart rate, and pace, compared with your warm-up to find where you got nervous."],
-        ["Take a breath", "When you seem very nervous, you can play relaxing background music while you keep answering."]
+        ["Take a breath", "When you seem very nervous, you can play relaxing background music while you keep answering."],
+        ["Chinese or English", "Questions, follow-ups, and the feedback report all work in Chinese and English. Just pick your practice language."]
       ],
-      title: "Practice here before the real thing.",
-      lede: "AI plays your interviewer or your audience while analyzing your expressions, eye contact, voice, and heart rate. You get a specific feedback report at the end.",
+      title: "Set up your practice",
+      lede: "Pick a mode, add the job and your resume, and you are ready to start.",
       step1: "1　Choose a mode", interview: "Mock interview", interviewDesc: "An AI interviewer asks questions based on your resume and follows up on vague answers.",
       present: "Class presentation", presentDesc: "Give your full presentation without interruption. The AI asks questions afterward.",
       step2: "2　Practice details", track: "Field", job: "Position", otherJob: "Other (questions based on the job description)",
@@ -210,10 +220,10 @@
   // ---------- shared pieces ----------
   const faceSvg = (small) => `
     <svg width="${small ? 110 : 220}" height="${small ? 130 : 260}" viewBox="0 0 220 260" fill="none" aria-hidden="true">
-      <ellipse cx="110" cy="118" rx="70" ry="90" stroke="#5E7A94" stroke-width="${small ? 3 : 2}" stroke-dasharray="4 6"/>
-      <circle cx="84" cy="104" r="6" stroke="#9CC3E0" stroke-width="2"/><circle cx="136" cy="104" r="6" stroke="#9CC3E0" stroke-width="2"/>
-      <circle cx="84" cy="104" r="2" fill="#9CC3E0"/><circle cx="136" cy="104" r="2" fill="#9CC3E0"/>
-      <path d="M92 160c10 8 26 8 36 0" stroke="#5E7A94" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="110" cy="118" rx="70" ry="90" stroke="#6E6A9E" stroke-width="${small ? 3 : 2}" stroke-dasharray="4 6"/>
+      <circle cx="84" cy="104" r="6" stroke="#C4B5FD" stroke-width="2"/><circle cx="136" cy="104" r="6" stroke="#C4B5FD" stroke-width="2"/>
+      <circle cx="84" cy="104" r="2" fill="#C4B5FD"/><circle cx="136" cy="104" r="2" fill="#C4B5FD"/>
+      <path d="M92 160c10 8 26 8 36 0" stroke="#6E6A9E" stroke-width="2" stroke-linecap="round"/>
       ${small ? "" : '<rect x="70" y="58" width="80" height="22" rx="4" stroke="#E0A458" stroke-width="2"/>'}
     </svg>`;
 
@@ -265,69 +275,84 @@
   }, true);
 
   // ---------- views ----------
-  // Landing illustration: interview screen on a monitor + feedback report on a phone.
-  // Colors come from CSS classes (.ia-*) so it follows light/dark mode.
-  const introArt = () => `
-    <svg viewBox="0 0 560 400" role="img" aria-label="${esc(t.introAlt)}">
-      <circle class="ia-blob" cx="250" cy="190" r="175"/>
-      <path class="ia-stand" d="M222 310h56l14 48h-84z"/>
-      <rect class="ia-stand" x="168" y="356" width="164" height="10" rx="5"/>
-      <rect class="ia-body" x="20" y="20" width="460" height="292" rx="18"/>
-      <rect class="ia-screen" x="36" y="36" width="428" height="256" rx="8"/>
-      <rect class="ia-cam" x="52" y="52" width="262" height="160" rx="8"/>
-      <ellipse cx="183" cy="128" rx="34" ry="44" fill="none" stroke="#5E7A94" stroke-width="2" stroke-dasharray="4 6"/>
-      <circle cx="170" cy="120" r="3" fill="#9CC3E0"/><circle cx="196" cy="120" r="3" fill="#9CC3E0"/>
-      <path d="M174 148c6 5 12 5 18 0" fill="none" stroke="#5E7A94" stroke-width="2" stroke-linecap="round"/>
-      <rect x="62" y="62" width="74" height="14" rx="7" fill="rgba(255,255,255,.18)"/>
-      <circle cx="296" cy="196" r="5" fill="#FF6B5E"/>
-      <rect class="ia-card" x="52" y="222" width="262" height="54" rx="8"/>
-      <circle class="ia-avatar" cx="72" cy="240" r="9"/>
-      <rect class="ia-ink" x="88" y="234" width="150" height="7" rx="3.5"/>
-      <rect class="ia-line" x="88" y="250" width="200" height="6" rx="3"/>
-      <rect class="ia-line" x="88" y="262" width="120" height="6" rx="3"/>
-      <rect class="ia-warn" x="326" y="52" width="122" height="64" rx="8"/>
-      <rect class="ia-warn-ink" x="338" y="64" width="70" height="7" rx="3.5"/>
-      <rect class="ia-line" x="338" y="80" width="98" height="5" rx="2.5"/>
-      <rect class="ia-warn-bar" x="338" y="96" width="56" height="12" rx="4"/>
-      <rect class="ia-card" x="326" y="126" width="122" height="150" rx="8"/>
-      <rect class="ia-tile" x="336" y="136" width="48" height="32" rx="5"/>
-      <rect class="ia-tile" x="390" y="136" width="48" height="32" rx="5"/>
-      <rect class="ia-tile" x="336" y="176" width="48" height="32" rx="5"/>
-      <rect class="ia-tile" x="390" y="176" width="48" height="32" rx="5"/>
-      <rect class="ia-track" x="336" y="222" width="102" height="8" rx="4"/>
-      <rect class="ia-warn-bar" x="336" y="222" width="78" height="8" rx="4"/>
-      <rect class="ia-line" x="336" y="242" width="80" height="5" rx="2.5"/>
-      <rect class="ia-line" x="336" y="254" width="60" height="5" rx="2.5"/>
-      <rect class="ia-body" x="420" y="150" width="136" height="236" rx="20"/>
-      <rect class="ia-screen" x="430" y="170" width="116" height="200" rx="10"/>
-      <rect class="ia-ink" x="468" y="158" width="40" height="4" rx="2"/>
-      <circle class="ia-ring-bg" cx="488" cy="214" r="26"/>
-      <circle class="ia-ring" cx="488" cy="214" r="26" stroke-dasharray="121 164" transform="rotate(-90 488 214)"/>
-      <text class="ia-score" x="488" y="220" text-anchor="middle">7.4</text>
-      <rect class="ia-ink" x="440" y="252" width="96" height="6" rx="3"/>
-      <rect class="ia-line" x="440" y="264" width="70" height="6" rx="3"/>
-      <polyline class="ia-chart" points="440,302 456,296 472,290 488,274 504,288 520,292 536,290"/>
-      <rect class="ia-card" x="440" y="316" width="44" height="26" rx="5"/>
-      <rect class="ia-card" x="492" y="316" width="44" height="26" rx="5"/>
-      <rect class="ia-avatar" x="440" y="350" width="96" height="8" rx="4"/>
-    </svg>`;
+  // Landing page: dark hero (midnight + purple glow) with three floating preview cards
+  // taken from the sample report. The hero always stays dark, in light and dark mode.
+  const sparkIcon = `<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true"><path fill="currentColor" d="M12 2c.5 4.6 2.9 7.3 8 8-5.1.7-7.5 3.4-8 8-.5-4.6-2.9-7.3-8-8 5.1-.7 7.5-3.4 8-8z"/></svg>`;
+
+  // Nervousness sparkline for the right card (same sample data as the report)
+  function heroCurve() {
+    const d = SERIES.tension, w = 100, h = 40;
+    const line = d.map((v, i) => (i ? "L" : "M") + ((i / (d.length - 1)) * w).toFixed(1) + " " + (h - (v / 100) * h).toFixed(1)).join("");
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path class="hc-area" d="${line}L${w} ${h}L0 ${h}Z"/><path class="hc-line" d="${line}"/></svg>`;
+  }
+
+  const FEAT_ICONS = ["people", "screen", "chart", "music", "globe"];
+  const featCard = (i, side, extra = "") => {
+    const f = t.introFeat[i];
+    return `<div class="card reveal ${side} ${extra}"><span class="feat-ic">${icon(FEAT_ICONS[i], 22)}</span><b>${esc(f[0])}</b><p class="note">${esc(f[1])}</p></div>`;
+  };
+
+  // Slide the feature cards in once their top passes 88% of the window height.
+  function watchReveal() {
+    const limit = window.innerHeight * 0.88;
+    document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
+      if (el.getBoundingClientRect().top < limit) el.classList.add("in");
+    });
+  }
+
+  // Scroll-linked hero motion: writes progress (0 at top, 1 after ~60% of the hero) to --p.
+  // CSS turns it into the title fading up and the preview cards rising and spreading out.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let heroTick = false;
+  function updateHero() {
+    heroTick = false;
+    const hx = document.querySelector(".hx");
+    if (!hx || reduceMotion.matches) return;
+    const p = Math.min(1, Math.max(0, window.scrollY / (hx.offsetHeight * 0.6)));
+    hx.style.setProperty("--p", p.toFixed(3));
+  }
+  function onIntroScroll() { updateHero(); watchReveal(); }
+  window.addEventListener("scroll", () => {
+    if (!heroTick && route() === "intro") { heroTick = true; requestAnimationFrame(onIntroScroll); }
+  }, { passive: true });
 
   function viewIntro() {
+    const score = 7.4;
     return `
-    <div class="wrap">
-      <section class="intro">
-        <div class="intro-art">${introArt()}</div>
-        <div class="intro-text">
-          <h1>${esc(t.introTitle)}</h1>
-          <p>${esc(t.introBody)}</p>
-          <div class="intro-acts">
-            <a class="btn" href="#report">${esc(t.introSample)}</a>
-            <a class="btn dark" href="#setup">${esc(t.introStart)}</a>
-          </div>
+    <section class="hx">
+      <div class="hx-inner">
+        <ul class="hx-kick">${t.heroKicker.map((k) => `<li>→ ${esc(k)}</li>`).join("")}</ul>
+        <h1 class="hx-title"><span>${esc(t.heroTitle[0])}</span><span><span class="hx-spark">${sparkIcon}</span>${esc(t.heroTitle[1])}</span></h1>
+        <p class="hx-sub">${esc(t.introBody)}</p>
+        <div class="hx-acts">
+          <a class="btn primary" href="#setup">${esc(t.introStart)}</a>
+          <a class="btn glass" href="#report">${esc(t.introSample)}</a>
         </div>
-      </section>
-      <div class="grid4 intro-feats">
-        ${t.introFeat.map((f) => `<div class="card"><b>${esc(f[0])}</b><p class="note">${esc(f[1])}</p></div>`).join("")}
+      </div>
+      <div class="hx-cards" role="img" aria-label="${esc(t.introAlt)}">
+        <div class="hc hc-bars">
+          <div class="hc-head"><span class="hc-ic">${sparkIcon}</span><b>${esc(t.hcBars)}</b><span class="hc-meta">${esc(t.hcBarsMeta)}</span></div>
+          ${t.hcBarItems.map(([k, v]) => `<div class="hc-row"><span>${esc(k)}</span><i><i style="width:${v}%"></i></i><span>${v}</span></div>`).join("")}
+        </div>
+        <div class="hc hc-score">
+          <b>${esc(t.hcScore)}</b>
+          <div class="hc-gauge">
+            <svg viewBox="0 0 120 66"><path class="hg-off" d="M10 60A50 50 0 0 1 110 60" pathLength="100"/><path class="hg-on" d="M10 60A50 50 0 0 1 110 60" pathLength="100" stroke-dasharray="${score * 10} 100"/></svg>
+            <span class="hc-n">${score}</span>
+          </div>
+          <span class="hc-cap">${esc(t.delta)}</span>
+        </div>
+        <div class="hc hc-curve">
+          <div class="hc-head"><span class="hc-ic">${sparkIcon}</span><b>${esc(t.hcCurve)}</b><span class="hc-meta">${esc(t.hcCurveMeta)}</span></div>
+          ${heroCurve()}
+        </div>
+      </div>
+    </section>
+    <div class="wrap">
+      <div class="intro-feats">
+        <div class="feat-col">${featCard(0, "from-left")}${featCard(1, "from-left", "later")}</div>
+        <div class="feat-col">${featCard(2, "from-right")}${featCard(3, "from-right", "later")}</div>
+        ${featCard(4, "from-bottom", "feat-wide")}
       </div>
       <p class="demo-flag">${esc(t.demo)}</p>
     </div>`;
@@ -400,7 +425,7 @@
     const f = state.form;
     return `
     <div class="wrap">
-      <div class="hero"><h1>${esc(t.title)}</h1><p>${esc(t.lede)}</p></div>
+      <div class="page-head" style="margin-bottom:28px"><div><h1 class="page-title">${esc(t.title)}</h1><span class="muted" style="font-size:14px">${esc(t.lede)}</span></div></div>
       <div class="row">
         <section class="col-main" style="gap:28px">
           <div class="stack" style="gap:12px">
@@ -457,7 +482,7 @@
           </div>
           <label class="check"><input type="checkbox" checked><span>${esc(t.relaxOpt)}</span></label>
           <p class="note">${esc(t.privacy)}</p>
-          <a class="btn dark big" href="${isI ? "#interview" : "#present"}">${esc(isI ? t.startI : t.startP)}</a>
+          <a class="btn primary big" href="${isI ? "#interview" : "#present"}">${esc(isI ? t.startI : t.startP)}</a>
         </aside>
       </div>
       <p class="demo-flag">${esc(t.demo)}</p>
@@ -584,6 +609,11 @@
   const ICONS = {
     eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     pace: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/>',
+    people: '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A4.5 4.5 0 0 1 21 18.5"/>',
+    screen: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M7 12l3-3 2 2 4-4"/>',
+    chart: '<path d="M3 17l5-5 4 3 7-8"/><path d="M14 7h5v5"/>',
+    music: '<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     filler: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>',
     heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
     ok: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
@@ -710,7 +740,7 @@
     <div class="wrap stack report" style="gap:24px">
       <div class="page-head">
         <div><h1 class="page-title">${esc(t.reportHead)}</h1><span class="muted" style="font-size:14px">${esc(t.reportSub)}</span></div>
-        <a class="btn dark small" href="#setup">${esc(t.again)}</a>
+        <a class="btn primary small" href="#setup">${esc(t.again)}</a>
       </div>
       <section class="card verdict">
         <div class="gauge" role="img" aria-label="${esc(t.scoreAria)}">
@@ -768,6 +798,7 @@
   function renderTopbar() {
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t[el.dataset.i18n]; });
     $("homeBtn").hidden = route() === "intro";
+    document.body.classList.toggle("on-intro", route() === "intro");
     document.querySelectorAll("[data-lang]").forEach((b) => {
       b.classList.toggle("on", b.dataset.lang === state.lang);
       b.setAttribute("aria-pressed", b.dataset.lang === state.lang);
@@ -787,6 +818,7 @@
     const f = $("slideFile");
     if (f) f.addEventListener("change", () => { if (f.files[0]) $("slideName").textContent = f.files[0].name; });
     if (r === "report") drawReportCharts();
+    if (r === "intro") { watchReveal(); updateHero(); }
   }
 
   let resizeId = null;
@@ -797,6 +829,7 @@
 
   function onRouteChange() {
     const r = route();
+    stopSpeaking();
     stopMusic();
     if (r !== "interview" && r !== "present") stopCamera();
     clearInterval(timerId);
@@ -808,6 +841,10 @@
     }
     render();
     window.scrollTo(0, 0);
+    // The interviewer reads the question when the interview opens.
+    // Browsers only allow speech after the user has clicked something on the page;
+    // on a direct page load it fails quietly and "Read again" still works.
+    if (r === "interview") setTimeout(() => { if (route() === "interview") speak(); }, 500);
   }
 
   // ---------- camera ----------
@@ -847,19 +884,88 @@
     music = null;
   }
 
-  // ---------- read question aloud (the interviewer plays the "talk" loop meanwhile) ----------
-  let currentUtterance = null;
-  function speak() {
-    if (!window.speechSynthesis) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t.question);
-    u.lang = state.lang === "en" ? "en-US" : "zh-TW";
-    currentUtterance = u;
-    // cancel() fires "end" on the previous utterance late, so ignore events from old ones
-    u.onstart = () => { if (currentUtterance === u) setTalking(true); };
-    u.onend = u.onerror = () => { if (currentUtterance === u) setTalking(false); };
-    speechSynthesis.speak(u);
+  // ---------- text to speech (browser built-in, free, no API key) ----------
+  // The interviewer plays the "talk" loop while speaking.
+  // Picks the most natural voice the browser has. Edge ships free neural voices
+  // ("Microsoft HsiaoChen Online (Natural)" for zh-TW), so Edge sounds best.
+  const tts = window.speechSynthesis || null;
+  let voices = [];
+  const loadVoices = () => { voices = tts ? tts.getVoices() : []; };
+  if (tts) { loadVoices(); tts.addEventListener("voiceschanged", loadVoices); }
+  // Chrome loads the voice list asynchronously; wait up to 1 s for it on the first call.
+  const voicesReady = () => voices.length ? Promise.resolve() : new Promise((res) => {
+    const to = setTimeout(res, 1000);
+    tts.addEventListener("voiceschanged", () => { clearTimeout(to); loadVoices(); res(); }, { once: true });
+  });
+
+  function pickVoice(lang) {
+    // Taiwan Mandarin first, always: region outweighs voice quality.
+    // zh-HK is left out on purpose (those voices speak Cantonese); zh-CN is Mandarin with a mainland accent, last resort.
+    const want = lang === "en" ? ["en-US", "en-GB", "en"] : ["zh-TW", "zh-CN", "zh"];
+    const norm = (v) => v.lang.replace("_", "-").toLowerCase();
+    const score = (v) => {
+      const i = want.findIndex((w) => norm(v).startsWith(w.toLowerCase()));
+      if (i < 0 || (lang !== "en" && /^zh-(hk|yue)/.test(norm(v)))) return -1;
+      let s = (want.length - i) * 1000;                    // region first
+      if (/natural|online|neural/i.test(v.name)) s += 100; // neural voices (Edge, some Windows/Android)
+      else if (/google/i.test(v.name)) s += 50;           // Chrome's network voices
+      else if (/premium|enhanced/i.test(v.name)) s += 40; // Apple's better voices
+      // the interviewer is a woman: prefer female voices
+      // (Edge 曉臻/曉雨 = HsiaoChen/HsiaoYu, Windows Hanhan/Yating, Apple Mei-Jia; English Jenny/Aria/Samantha)
+      if (/曉臻|曉雨|hsiaochen|hsiaoyu|hanhan|yating|mei-?jia|jenny|aria|samantha/i.test(v.name)) s += 5;
+      return s;
+    };
+    let best = null, bestScore = -1;
+    voices.forEach((v) => { const s = score(v); if (s > bestScore) { best = v; bestScore = s; } });
+    return best;
   }
+
+  // Split into sentences so long text isn't cut off (Chrome stops a single utterance after ~15 s).
+  // 60 characters is about 12 s of spoken Chinese.
+  function chunks(text, max = 60) {
+    const parts = text.match(/[^。！？!?；;\n]+[。！？!?；;]*|\n+/g) || [text];
+    const out = [];
+    parts.forEach((p) => {
+      p = p.trim();
+      if (!p) return;
+      const last = out[out.length - 1];
+      if (last && last.length + p.length <= max) out[out.length - 1] = last + " " + p;
+      else for (let i = 0; i < p.length; i += max) out.push(p.slice(i, i + max));
+    });
+    return out;
+  }
+
+  // speak(text, lang): reads text aloud; later the interview turn loop will call this with each new question.
+  // Returns a promise that resolves when speaking ends (or is stopped).
+  let speakRun = 0;
+  async function speak(text = t.question, lang = state.lang) {
+    if (!tts) return;
+    const run = ++speakRun;          // a newer call cancels this one
+    tts.cancel();
+    await voicesReady();
+    if (run !== speakRun) return;
+    const voice = pickVoice(lang);
+    const parts = chunks(text);
+    return new Promise((resolve) => {
+      const done = () => { if (run === speakRun) setTalking(false); resolve(); };
+      parts.forEach((p, i) => {
+        const u = new SpeechSynthesisUtterance(p);
+        u.lang = voice ? voice.lang : (lang === "en" ? "en-US" : "zh-TW");
+        if (voice) u.voice = voice;
+        if (i === 0) u.onstart = () => { if (run === speakRun) setTalking(true); };
+        // cancel() fires "end"/"error" on old utterances late, so events from old runs are ignored
+        if (i === parts.length - 1) u.onend = done;
+        u.onerror = (e) => { if (e.error !== "interrupted" && e.error !== "canceled") done(); else resolve(); };
+        tts.speak(u);
+      });
+    });
+  }
+  function stopSpeaking() {
+    speakRun++;
+    if (tts) tts.cancel();
+    setTalking(false);
+  }
+  window.coachSpeak = speak;   // handy for testing in the console: coachSpeak("你好")
 
   // ---------- events ----------
   document.addEventListener("click", (e) => {
