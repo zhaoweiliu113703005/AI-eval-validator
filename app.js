@@ -292,28 +292,45 @@
     return `<div class="card reveal ${side} ${extra}"><span class="feat-ic">${icon(FEAT_ICONS[i], 22)}</span><b>${esc(f[0])}</b><p class="note">${esc(f[1])}</p></div>`;
   };
 
-  // Slide the feature cards in once their top passes 88% of the window height.
+  // Slide the feature cards in once when they scroll into view; the browser does the watching.
+  let revealObs = null;
   function watchReveal() {
-    const limit = window.innerHeight * 0.88;
-    document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
-      if (el.getBoundingClientRect().top < limit) el.classList.add("in");
-    });
+    if (revealObs) revealObs.disconnect();
+    const els = document.querySelectorAll(".reveal:not(.in)");
+    if (!("IntersectionObserver" in window)) { els.forEach((el) => el.classList.add("in")); return; }
+    revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); revealObs.unobserve(en.target); } });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    els.forEach((el) => revealObs.observe(el));
   }
 
-  // Scroll-linked hero motion: writes progress (0 at top, 1 after ~60% of the hero) to --p.
-  // CSS turns it into the title fading up and the preview cards rising and spreading out.
+  // Scroll-linked hero motion. Browsers with CSS scroll timelines do it all in CSS (style.css);
+  // this fallback only runs without them, and sets each element's own translate/rotate/scale
+  // (not a variable on the parent, which would restyle every child each frame).
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const nativeScrollMotion = !!(window.CSS && CSS.supports && CSS.supports("animation-timeline: scroll()"));
   let heroTick = false;
   function updateHero() {
     heroTick = false;
+    if (nativeScrollMotion || reduceMotion.matches) return;
     const hx = document.querySelector(".hx");
-    if (!hx || reduceMotion.matches) return;
-    const p = Math.min(1, Math.max(0, window.scrollY / (hx.offsetHeight * 0.6)));
-    hx.style.setProperty("--p", p.toFixed(3));
+    if (!hx) return;
+    const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.6)));
+    const set = (sel, tr, rot, sc) => {
+      const el = hx.querySelector(sel);
+      if (!el) return;
+      el.style.translate = tr;
+      if (rot !== undefined) el.style.rotate = rot;
+      if (sc !== undefined) el.style.scale = sc;
+    };
+    const inner = hx.querySelector(".hx-inner");
+    if (inner) { inner.style.translate = `0 ${-70 * p}px`; inner.style.opacity = String(1 - p); }
+    set(".hc-score", `0 ${-70 * p}px`, undefined, String(1 + 0.06 * p));
+    set(".hc-bars", `${-60 * p}px ${6 - 40 * p}px`, `${-2 - 3 * p}deg`);
+    set(".hc-curve", `${60 * p}px ${6 - 40 * p}px`, `${2 + 3 * p}deg`);
   }
-  function onIntroScroll() { updateHero(); watchReveal(); }
   window.addEventListener("scroll", () => {
-    if (!heroTick && route() === "intro") { heroTick = true; requestAnimationFrame(onIntroScroll); }
+    if (!nativeScrollMotion && !heroTick && route() === "intro") { heroTick = true; requestAnimationFrame(updateHero); }
   }, { passive: true });
 
   function viewIntro() {
